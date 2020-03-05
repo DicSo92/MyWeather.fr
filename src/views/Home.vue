@@ -101,13 +101,18 @@
             },
             temporaryStore(city) {
                 this.search = city
+                localStorage.setItem('lastSearch', city)
             },
             addToFavorite(city) {
-                const current = Array(city)
                 if (localStorage.getItem('favorites')) {
-                    current.push(localStorage.getItem('favorites').join())
+                    let current = localStorage.getItem('favorites')
+                    current.unshift(city)
+                    localStorage.setItem('favorites', current)
+                } else {
+                    localStorage.setItem('favorites', [city])
                 }
-                localStorage.setItem('favorites', current)
+
+                console.log(localStorage.getItem('favorites').join(', '))
             }
         },
     }

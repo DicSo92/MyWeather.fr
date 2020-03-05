@@ -9,7 +9,12 @@ import '@ionic/core/css/ionic.bundle.css';
 
 import '@/assets/css/custom-ionic.scss'
 
-Vue.use(Ionic);
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+
+Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
+
+Vue.use(Ionic)
 
 let bus = new Vue
 Vue.prototype.$bus = bus

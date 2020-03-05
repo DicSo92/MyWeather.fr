@@ -20,7 +20,7 @@
             <ion-spinner color="light"></ion-spinner>
             <ion-list id="searchList">
                 <ion-item color="transparent" class="containerItem"
-                          v-for="(city, index) in filteredCities"
+                          v-for="(city, index) in searchCities"
                           v-if="index < 10"
                           v-bind:key="city.id" v-on:click="chooseCity(city)">
                     <ion-label color="light">{{city.name}}</ion-label>
@@ -32,41 +32,48 @@
 
 <script>
     import CitiesJson from '@/ressources/city.list.min.json'
+    import store from '../store';
     export default {
         name: 'modal',
         // props: {bookProps: {type: Object}},
         data() {
             return {
-                cities: '',
-                search: ''
+                search: '',
+                searchCities: []
             }
         },
-        mounted() {
-            this.cities = JSON.parse(JSON.stringify(CitiesJson))
-            console.log(this.cities)
+        created() {
+            this.debouncedGetSearch = _.debounce(this.getSearch, 500)
         },
-        computed: {
-            filteredCities () {
-                if (this.search.length > 3 ) {
-                    return this.cities.filter(citie => {
+        mounted() {
+        },
+        watch: {
+            search: function (newSearch, oldSearch) {
+                console.log("J'attends que vous arrêtiez de taper...")
+                this.debouncedGetSearch()
+            }
+        },
+        computed: {},
+        methods: {
+            getSearch () {
+                if (this.search.length > 0 ) {
+                    this.searchCities = store.state.cities.filter(citie => {
                         return citie.name.toLowerCase().includes(this.search.toLowerCase())
                     })
                 } else {
-                    return []
+                    this.searchCities = []
                 }
-            }
-        },
-        methods: {
-            dismissModal() {
-                this.$ionic.modalController.dismiss()
             },
-            storeCities(cities) {
+            storeLCities(cities) {
                 localStorage.setItem('cities', cities)
             },
             chooseCity(city) {
                 this.dismissModal()
                 this.$bus.$emit('searchCity', city)
-            }
+            },
+            dismissModal() {
+                this.$ionic.modalController.dismiss()
+            },
         }
     }
 </script>

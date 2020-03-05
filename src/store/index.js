@@ -5,11 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    cities: null
   },
+  getters: {},
   mutations: {
+    changeCities(state, val) {
+      state.cities = val
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })
