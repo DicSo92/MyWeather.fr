@@ -1,0 +1,14 @@
+ion-content {
+  --background: url('../background.jpg') no-repeat center center / cover;
+}
+ion-toolbar {
+  --background: transparent;
+}
+$colors: (
+        //primary:    #f9961e,
+        //secondary:  #882e2e,
+        //danger:     #f84e4e,
+        //light:      #f4f4f4,
+        //dark:       #222,
+        transparent:   transparent,
+);

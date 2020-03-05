@@ -1,0 +1,95 @@
+<template>
+    <div id="theModalSearch">
+        <ion-header translucent>
+            <ion-toolbar>
+                <ion-title color="light">Search City</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button @click="dismissModal">
+                        <ion-icon slot="icon-only" name="close" color="light"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+            <ion-toolbar>
+                <ion-searchbar animated id="searchBar"
+                               v-bind:value="search"
+                               @input="search = $event.target.value">
+                </ion-searchbar>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding" fullscreen>
+            <ion-spinner color="light"></ion-spinner>
+            <ion-list id="searchList">
+                <ion-item color="transparent" class="containerItem"
+                          v-for="(city, index) in filteredCities"
+                          v-if="index < 10"
+                          v-bind:key="city.id" v-on:click="chooseCity(city)">
+                    <ion-label color="light">{{city.name}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </div>
+</template>
+
+<script>
+    import CitiesJson from '@/ressources/city.list.min.json'
+    export default {
+        name: 'modal',
+        // props: {bookProps: {type: Object}},
+        data() {
+            return {
+                cities: '',
+                search: ''
+            }
+        },
+        mounted() {
+            this.cities = JSON.parse(JSON.stringify(CitiesJson))
+            console.log(this.cities)
+        },
+        computed: {
+            filteredCities () {
+                if (this.search.length > 3 ) {
+                    return this.cities.filter(citie => {
+                        return citie.name.toLowerCase().includes(this.search.toLowerCase())
+                    })
+                } else {
+                    return []
+                }
+            }
+        },
+        methods: {
+            dismissModal() {
+                this.$ionic.modalController.dismiss()
+            },
+            storeCities(cities) {
+                localStorage.setItem('cities', cities)
+            },
+            chooseCity(city) {
+                this.dismissModal()
+                this.$bus.$emit('searchCity', city)
+            }
+        }
+    }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+    #theModalSearch {
+
+    }
+    #searchBar {
+        /*--background: #990000;*/
+        --color: white;
+        --icon-color: white;
+        /*--box-shadow: 0px 0px 0px 13px #ffffff;*/
+        --placeholder-color: white;
+        padding-bottom: 0;
+        border-bottom: gray 1px solid;
+    }
+    #searchList {
+        background-color: transparent;
+        .containerItem {
+            border-bottom: 1px solid white
+        }
+    }
+
+</style>
