@@ -5,13 +5,28 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    cities: null
+    cities: null,
+    currentSearch: null,
+    currentLocation: {name: 'Current Location', id: 123488856},
+    favorites: [],
   },
   getters: {},
   mutations: {
     changeCities(state, val) {
       state.cities = val
     },
+    changeCurrentSearch(state, val) {
+      state.currentSearch = val
+    },
+    changeCurrentLocation(state, val) {
+      state.currentLocation = val
+    },
+    changeFavorites(state, val) {
+      state.favorites = val
+    },
+    removeFavorite(state, valId) {
+      state.favorites.splice(state.favorites.findIndex(favorite => favorite.id === valId), 1)
+    }
   },
   actions: {},
   modules: {}

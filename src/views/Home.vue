@@ -12,46 +12,19 @@
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
                 </ion-buttons>
-                <ion-title>{{!this.search ? 'Paris' : this.search.name}}</ion-title>
+                <ion-title>{{!this.getCurrentSearch ? 'Paris' : this.getCurrentSearch.name}}</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content fullscreen class="ion-padding" scroll-y="false">
-            <ion-slides id="slidesPagesFav">
+            <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
+                        v-if="this.renderComponent"
+                        v-bind:key="this.filterSlide.length">
 
-                <ion-slide v-for="(citySlide, index) in this.filterSlide">
-                    <ion-grid>
-                        <ion-row>
-                            <ion-col>
-                                --{{citySlide.name}}--
-                                <ion-buttons>
-                                    <ion-button @click="addToFavorite(citySlide)">
-                                        <ion-icon slot="icon-only" name="star" color="light"></ion-icon>
-                                    </ion-button>
-                                </ion-buttons>
-                            </ion-col>
-                        </ion-row>
-                        <ion-row>
-                            <ion-col size="4" class="bg-gray">
-                                col 4
-                            </ion-col>
-                            <ion-col size="4" class="bg-gray">
-                                col 4
-                            </ion-col>
-                            <ion-col size="4" class="bg-gray">
-                                col 4
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                </ion-slide>
-
-                <!--                <ion-slide>-->
-                <!--                    <img src="../assets/logo.png"/>-->
-                <!--                    <h2>Ready to Play?</h2>-->
-                <!--                    <ion-button fill="clear">Continue-->
-                <!--                        <ion-icon slot="end" name="arrow-forward"></ion-icon>-->
-                <!--                    </ion-button>-->
-                <!--                </ion-slide>-->
+                <HomeSlide v-for="(citySlide, index) in this.filterSlide"
+                           v-bind:key="index"
+                           :city="citySlide">
+                </HomeSlide>
 
             </ion-slides>
         </ion-content>
@@ -59,60 +32,72 @@
 </template>
 
 <script>
-    import theModalSearch from '@/components/theModalSearch.vue'
+    import TheModalSearch from '@/components/TheModalSearch.vue'
+    import HomeSlide from '@/components/HomeSlide.vue'
 
     export default {
         name: 'Home',
-        components: {},
+        components: {
+            HomeSlide
+        },
         data() {
             return {
                 slideOpts: {
                     initialSlide: 1,
-                    speed: 400
+                    speed: 400,
+                    pager: true
                 },
-                search: null,
+                renderComponent: true
             }
         },
         mounted() {
-            this.$bus.$on('searchCity', (city) => {
-                this.temporaryStore(city)
+            this.$bus.$on('dismissModal', () => {
+                this.setRenderComponent()
             })
+            this.$bus.$on('removeFromFavorites', () => {
+                this.setRenderComponent()
+            })
+        },
+        watch: {
+            getCurrentSearch () {
+                this.setRenderComponent()
+            },
         },
         computed: {
             filterSlide() {
-                if (!localStorage.getItem('favorites')) {
-                    if (this.search) {
-                        return [this.search, {name: 'Current Location', id: 123456}, {name: 'test', id: 4578899}]
-                    } else {
-                        return [{name: 'Current Location', id: 123456}, {name: 'test', id: 4578899}]
-                    }
+                console.log('|| getFavorites ||')
+                console.log(this.getFavorites)
+                if (this.getCurrentSearch && this.getFavorites) {
+                    return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
+                } else if (this.getFavorites && !this.getCurrentSearch) {
+                    return [this.getCurrentLocation, ...this.getFavorites]
                 } else {
-                    return localStorage.getItem('favorites')
+                    return [this.getCurrentLocation]
                 }
-            }
+            },
+            getCurrentSearch () {
+                return this.$store.state.currentSearch
+            },
+            getFavorites () {
+                return this.$store.state.favorites
+            },
+            getCurrentLocation () {
+                return this.$store.state.currentLocation
+            },
         },
         methods: {
             openSearch() {
                 return this.$ionic.modalController
                     .create({
-                        component: theModalSearch,
+                        component: TheModalSearch,
                     })
-                    .then(m => m.present())
+                    .then(m => {
+                        m.present()
+                        this.renderComponent = false
+                    })
             },
-            temporaryStore(city) {
-                this.search = city
-                localStorage.setItem('lastSearch', city)
-            },
-            addToFavorite(city) {
-                if (localStorage.getItem('favorites')) {
-                    let current = localStorage.getItem('favorites')
-                    current.unshift(city)
-                    localStorage.setItem('favorites', current)
-                } else {
-                    localStorage.setItem('favorites', [city])
-                }
-
-                console.log(localStorage.getItem('favorites').join(', '))
+            setRenderComponent () {
+                this.renderComponent = true
             }
         },
     }
@@ -122,6 +107,8 @@
     #slidesPagesFav {
         height: 100%;
         color: white;
+        --bullet-background: white;
+        --bullet-background-active: white;
     }
 
     .toolbar {
