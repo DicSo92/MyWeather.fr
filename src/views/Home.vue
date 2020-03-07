@@ -187,11 +187,18 @@
                 console.log(nowUrl)
                 axios.get(nowUrl)
                     .then(response => {
-                        console.log(response.data)
-                        this.$store.commit('changeCurrentLocation', response.data)
+                        console.log('curentLocation currentWeather axios')
 
-                        // afficher composant
+                        this.$store.commit('changeCurrentLocation', response.data)
                         this.renderFirstComponent = true
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+
+                axios.get(forecastUrl)
+                    .then(response => {
+                        console.log('curentLocation forecast axios')
                     })
                     .catch(error => {
                         console.log(error)

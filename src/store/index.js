@@ -9,6 +9,7 @@ export default new Vuex.Store({
     currentSearch: null,
     currentLocation: null,
     favorites: [],
+    favoritesForecast: { time: 0, favoritesForecastDatas: [] }
   },
   getters: {},
   mutations: {
@@ -29,7 +30,10 @@ export default new Vuex.Store({
     },
     removeFavorite(state, valId) {
       state.favorites.splice(state.favorites.findIndex(favorite => favorite.id === valId), 1)
-    }
+    },
+    changeFavoritesForecast(state, val) {
+      state.favoritesForecast = val
+    },
   },
   actions: {},
   modules: {}

@@ -1,8 +1,9 @@
 <template>
-    <ion-slide v-bind:key="city.id">
+    <ion-slide v-if="this.renderWeather" v-bind:key="city.id + _.random(0, 1000)">
         <ion-item color="transparent">
             <ion-text color="light">
                 <h4>{{city.name}}</h4>
+                <h3>{{this.currentData ? this.currentData.name : ''}}</h3>
             </ion-text>
             <ion-buttons slot="end">
                 <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: 'Home',
         components: {},
@@ -42,9 +44,13 @@
         },
         data() {
             return {
+                currentData: null,
+                forecastData: null,
+                renderWeather: true
             }
         },
         mounted() {
+            this.getCurrentWeatherData()
         },
         watch: {},
         computed: {
@@ -74,6 +80,34 @@
             removeFromFavorites(city) {
                 this.$bus.$emit('changeCurrentIndex', 0)
                 this.$store.commit('removeFavorite', city.id)
+            },
+            getCurrentWeatherData () {
+                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.city.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                axios.get(nowUrl)
+                    .then(response => {
+                        this.currentData = response.data
+                        if (this.getFavorites.findIndex(favorite => favorite.id === this.city.id) === -1) {
+                            this.getWeatherForecastData()
+                            console.log('not in storage')
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+            },
+            getWeatherForecastData () {
+                // if localstorage favoritesForecast time > 3h --> change it sinon ne pas faire la requete
+
+                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                axios.get(forecastUrl)
+                    .then(response => {
+                        console.log('getForecast ')
+                        this.forecastData = response.data
+                        this.renderWeather = true
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
             },
         },
     }
