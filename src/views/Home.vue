@@ -12,11 +12,26 @@
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
                 </ion-buttons>
-                <ion-title>{{this.getCurrentLocation ? this.currentSlideData.name : 'no geolocation'}}</ion-title>
+                <ion-title>{{this.filterHeaderText}}</ion-title>
             </ion-toolbar>
         </ion-header>
 
-        <ion-content fullscreen class="ion-padding" scroll-y="false">
+        <ion-content fullscreen class="ion-padding" scroll-y="false" v-if="!this.getCurrentLocation && !this.getFavorites.length && !this.getCurrentSearch">
+            <ion-text color="light" class="ion-text-center">
+                <h4>Do a search !</h4>
+            </ion-text>
+            <ion-button @click="openSearch" class="ion-text-center">
+                <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
+            </ion-button>
+            <ion-text color="light" class="ion-text-center">
+                <h4>OR</h4>
+                <h4>Activate Geolocation</h4>
+            </ion-text>
+            <ion-button @click="locateMe" class="ion-text-center">
+                <ion-icon slot="icon-only" name="compass" color="light"></ion-icon>
+            </ion-button>
+        </ion-content>
+        <ion-content fullscreen class="ion-padding" scroll-y="false" v-else>
             <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
                         v-if="this.renderComponent && this.filterSlide"
                         v-bind:key="this.filterSlide.length"
@@ -58,21 +73,7 @@
             }
         },
         created() {
-            this.renderFirstComponent = false
-            if(!("geolocation" in navigator)) {
-                this.showToast('Geolocation is not available on your device')
-                return
-            }
-            navigator.geolocation.getCurrentPosition(pos => {
-                this.showToast('Geolocation Authorized')
-                console.log(pos)
-                this.currentPosition = pos
-                this.getCurrentPositionData(pos)
-            }, err => {
-                this.showToast(err.message)
-                this.$store.commit('changeCurrentLocation', null)
-                this.renderFirstComponent = true
-            })
+            this.getLocation()
         },
         mounted() {
             this.$bus.$on('dismissModal', () => {
@@ -93,33 +94,14 @@
         computed: {
             filterSlide() {
                 console.log(this.getFavorites)
-                // if (this.getCurrentSearch && this.getFavorites) {
-                //     if (this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
-                //         return [this.getCurrentSearch, ...this.getFavorites]
-                //     } else {
-                //         return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
-                //     }
-                // } else if (this.getFavorites && !this.getCurrentSearch) {
-                //     if (this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
-                //         return [...this.getFavorites]
-                //     } else {
-                //         return [this.getCurrentLocation, ...this.getFavorites]
-                //     }
-                // } else {
-                //     return [this.getCurrentLocation]
-                // }
                 if (this.getCurrentSearch && this.getFavorites) {
-                    if (this.getCurrentLocation && this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
-                        return [this.getCurrentSearch, ...this.getFavorites]
-                    } else if (this.getCurrentLocation){
+                    if (this.getCurrentLocation){
                         return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
                     } else {
                         return [this.getCurrentSearch, ...this.getFavorites]
                     }
                 } else if (this.getFavorites && !this.getCurrentSearch) {
-                    if (this.getCurrentLocation && this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
-                        return [...this.getFavorites]
-                    } else if (this.getCurrentLocation){
+                     if (this.getCurrentLocation){
                         return [this.getCurrentLocation, ...this.getFavorites]
                     } else {
                         return [...this.getFavorites]
@@ -142,6 +124,9 @@
             getCurrentLocation () {
                 return this.$store.state.currentLocation
             },
+            filterHeaderText () {
+                return !this.getCurrentLocation && !this.getFavorites.length && !this.getCurrentSearch ? 'no geolocation' : this.currentSlideData.name
+            }
         },
         methods: {
             openSearch() {
@@ -172,6 +157,28 @@
                 setTimeout(() => {
                     toast.dismiss();
                 }, 2000)
+            },
+            async getLocation () {
+                if(!("geolocation" in navigator)) {
+                    this.showToast('Geolocation is not available on your device')
+                    return
+                }
+                navigator.geolocation.getCurrentPosition(pos => {
+                    this.showToast('Geolocation Authorized')
+                    console.log(pos)
+                    this.currentPosition = pos
+                    this.getCurrentPositionData(pos)
+                }, err => {
+                    this.showToast(err.message)
+                    this.$store.commit('changeCurrentLocation', null)
+                })
+            },
+            async locateMe() {
+                try {
+                    await this.getLocation
+                } catch(e) {
+                    console.log(e.message);
+                }
             },
             getCurrentPositionData (pos) {
                 let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
