@@ -48,6 +48,12 @@
         },
         watch: {},
         computed: {
+            getCurrentLocation() {
+                return this.$store.state.currentLocation
+            },
+            getCurrentSearch () {
+                return this.$store.state.currentSearch
+            },
             getFavorites() {
                 return this.$store.state.favorites
             },
@@ -57,10 +63,16 @@
         },
         methods: {
             addToFavorites(city) {
+                if (this.getCurrentSearch && city.id === this.getCurrentSearch.id) {
+                    this.$store.commit('changeCurrentSearch', null)
+                }
                 this.$store.commit('addFavorite', city)
+                if (this.getCurrentLocation && this.getCurrentLocation.id !== city.id) {
+                    this.$bus.$emit('slideTo', 1)
+                }
             },
             removeFromFavorites(city) {
-                this.$bus.$emit('changeCurrentIndex')
+                this.$bus.$emit('changeCurrentIndex', 0)
                 this.$store.commit('removeFavorite', city.id)
             },
         },

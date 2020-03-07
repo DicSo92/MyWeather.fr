@@ -12,13 +12,13 @@
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
                 </ion-buttons>
-                <ion-title>{{this.currentSlideData.name}}</ion-title>
+                <ion-title>{{this.getCurrentLocation ? this.currentSlideData.name : 'no geolocation'}}</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content fullscreen class="ion-padding" scroll-y="false">
             <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
-                        v-if="this.renderComponent"
+                        v-if="this.renderComponent && this.filterSlide"
                         v-bind:key="this.filterSlide.length"
                         ref="slide" @ionSlideDidChange="slideChanged">
 
@@ -70,14 +70,19 @@
                 this.getCurrentPositionData(pos)
             }, err => {
                 this.showToast(err.message)
+                this.$store.commit('changeCurrentLocation', null)
+                this.renderFirstComponent = true
             })
         },
         mounted() {
             this.$bus.$on('dismissModal', () => {
                 this.setRenderComponent()
             })
-            this.$bus.$on('changeCurrentIndex', () => {
-                this.currentIndex = 0
+            this.$bus.$on('changeCurrentIndex', (index) => {
+                this.currentIndex = index
+            })
+            this.$bus.$on('slideTo', (index) => {
+                this.$refs.slide.slideTo(index)
             })
         },
         watch: {
@@ -88,12 +93,41 @@
         computed: {
             filterSlide() {
                 console.log(this.getFavorites)
+                // if (this.getCurrentSearch && this.getFavorites) {
+                //     if (this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
+                //         return [this.getCurrentSearch, ...this.getFavorites]
+                //     } else {
+                //         return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
+                //     }
+                // } else if (this.getFavorites && !this.getCurrentSearch) {
+                //     if (this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
+                //         return [...this.getFavorites]
+                //     } else {
+                //         return [this.getCurrentLocation, ...this.getFavorites]
+                //     }
+                // } else {
+                //     return [this.getCurrentLocation]
+                // }
                 if (this.getCurrentSearch && this.getFavorites) {
-                    return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
+                    if (this.getCurrentLocation && this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
+                        return [this.getCurrentSearch, ...this.getFavorites]
+                    } else if (this.getCurrentLocation){
+                        return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
+                    } else {
+                        return [this.getCurrentSearch, ...this.getFavorites]
+                    }
                 } else if (this.getFavorites && !this.getCurrentSearch) {
-                    return [this.getCurrentLocation, ...this.getFavorites]
-                } else {
+                    if (this.getCurrentLocation && this.getFavorites.findIndex(favorite => favorite.id === this.getCurrentLocation.id) !== -1) {
+                        return [...this.getFavorites]
+                    } else if (this.getCurrentLocation){
+                        return [this.getCurrentLocation, ...this.getFavorites]
+                    } else {
+                        return [...this.getFavorites]
+                    }
+                } else if (this.getCurrentLocation){
                     return [this.getCurrentLocation]
+                } else {
+                    return null
                 }
             },
             currentSlideData() {
