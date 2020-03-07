@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     cities: null,
     currentSearch: null,
-    currentLocation: {name: 'Current Location', id: 123488856},
+    currentLocation: null,
     favorites: [],
   },
   getters: {},

@@ -60,6 +60,7 @@
                 this.$store.commit('addFavorite', city)
             },
             removeFromFavorites(city) {
+                this.$bus.$emit('changeCurrentIndex')
                 this.$store.commit('removeFavorite', city.id)
             },
         },

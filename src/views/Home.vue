@@ -1,6 +1,6 @@
 <template>
-    <div class="ion-page">
-        <ion-header>
+    <div class="ion-page" v-if="this.renderFirstComponent">
+        <ion-header >
             <ion-toolbar class="toolbar">
                 <ion-buttons slot="start">
                     <ion-button>
@@ -35,6 +35,7 @@
 <script>
     import TheModalSearch from '@/components/TheModalSearch.vue'
     import HomeSlide from '@/components/HomeSlide.vue'
+    import axios from 'axios'
 
     export default {
         name: 'Home',
@@ -49,6 +50,7 @@
                     pager: true
                 },
                 renderComponent: true,
+                renderFirstComponent: true,
                 currentIndex: 0,
 
                 toastGeoLocStatus: '',
@@ -56,6 +58,7 @@
             }
         },
         created() {
+            this.renderFirstComponent = false
             if(!("geolocation" in navigator)) {
                 this.showToast('Geolocation is not available on your device')
                 return
@@ -65,10 +68,6 @@
                 console.log(pos)
                 this.currentPosition = pos
                 this.getCurrentPositionData(pos)
-
-
-
-
             }, err => {
                 this.showToast(err.message)
             })
@@ -76,6 +75,9 @@
         mounted() {
             this.$bus.$on('dismissModal', () => {
                 this.setRenderComponent()
+            })
+            this.$bus.$on('changeCurrentIndex', () => {
+                this.currentIndex = 0
             })
         },
         watch: {
@@ -138,14 +140,20 @@
                 }, 2000)
             },
             getCurrentPositionData (pos) {
-                let url = 'http://api.openweathermap.org/data/2.5/weather?q=' + rqst + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER;
-                console.log(url)
-                axios.get(url)
+                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+
+                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                console.log(nowUrl)
+                axios.get(nowUrl)
                     .then(response => {
-                        console.log(response.data);
+                        console.log(response.data)
+                        this.$store.commit('changeCurrentLocation', response.data)
+
+                        // afficher composant
+                        this.renderFirstComponent = true
                     })
                     .catch(error => {
-                        console.log(error);
+                        console.log(error)
                     });
             }
         },
