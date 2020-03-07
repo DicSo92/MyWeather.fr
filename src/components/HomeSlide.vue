@@ -1,23 +1,23 @@
 <template>
     <ion-slide v-bind:key="city.id">
+        <ion-item color="transparent">
+            <ion-text color="light">
+                <h4>{{city.name}}</h4>
+            </ion-text>
+            <ion-buttons slot="end">
+                <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
+                    <ion-icon slot="icon-only"
+                              name="star"
+                              color="warning"></ion-icon>
+                </ion-button>
+                <ion-button v-if="!isFavorite" @click="addToFavorites(city)">
+                    <ion-icon slot="icon-only"
+                              name="star-outline"
+                              color="light"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-item>
         <ion-grid>
-            <ion-row>
-                <ion-col>
-                    --{{city.name}}--
-                    <ion-buttons>
-                        <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
-                            <ion-icon slot="icon-only"
-                                      name="star"
-                                      color="warning"></ion-icon>
-                        </ion-button>
-                        <ion-button v-if="!isFavorite" @click="addToFavorites(city)">
-                            <ion-icon slot="icon-only"
-                                      name="star-outline"
-                                      color="light"></ion-icon>
-                        </ion-button>
-                    </ion-buttons>
-                </ion-col>
-            </ion-row>
             <ion-row>
                 <ion-col size="4" class="bg-gray">
                     col 4
@@ -41,7 +41,8 @@
             city: Object,
         },
         data() {
-            return {}
+            return {
+            }
         },
         mounted() {
         },
@@ -56,15 +57,10 @@
         },
         methods: {
             addToFavorites(city) {
-                let newFavorites = [city]
-                if (this.getFavorites.length > 0) {
-                    newFavorites.unshift(...this.getFavorites)
-                }
-                this.$store.commit('changeFavorites', newFavorites)
+                this.$store.commit('addFavorite', city)
             },
             removeFromFavorites(city) {
                 this.$store.commit('removeFavorite', city.id)
-                this.$bus.$emit('removeFromFavorites')
             },
         },
     }

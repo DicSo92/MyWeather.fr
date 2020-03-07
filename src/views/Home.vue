@@ -12,14 +12,15 @@
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
                 </ion-buttons>
-                <ion-title>{{!this.getCurrentSearch ? 'Paris' : this.getCurrentSearch.name}}</ion-title>
+                <ion-title>{{this.currentSlideData.name}}</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content fullscreen class="ion-padding" scroll-y="false">
             <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
                         v-if="this.renderComponent"
-                        v-bind:key="this.filterSlide.length">
+                        v-bind:key="this.filterSlide.length"
+                        ref="slide" @ionSlideDidChange="slideChanged">
 
                 <HomeSlide v-for="(citySlide, index) in this.filterSlide"
                            v-bind:key="index"
@@ -47,14 +48,33 @@
                     speed: 400,
                     pager: true
                 },
-                renderComponent: true
+                renderComponent: true,
+                currentIndex: 0,
+
+                toastGeoLocStatus: '',
+                currentPosition: null
             }
+        },
+        created() {
+            if(!("geolocation" in navigator)) {
+                this.showToast('Geolocation is not available on your device')
+                return
+            }
+            navigator.geolocation.getCurrentPosition(pos => {
+                this.showToast('Geolocation Authorized')
+                console.log(pos)
+                this.currentPosition = pos
+                this.getCurrentPositionData(pos)
+
+
+
+
+            }, err => {
+                this.showToast(err.message)
+            })
         },
         mounted() {
             this.$bus.$on('dismissModal', () => {
-                this.setRenderComponent()
-            })
-            this.$bus.$on('removeFromFavorites', () => {
                 this.setRenderComponent()
             })
         },
@@ -65,7 +85,6 @@
         },
         computed: {
             filterSlide() {
-                console.log('|| getFavorites ||')
                 console.log(this.getFavorites)
                 if (this.getCurrentSearch && this.getFavorites) {
                     return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
@@ -74,6 +93,9 @@
                 } else {
                     return [this.getCurrentLocation]
                 }
+            },
+            currentSlideData() {
+                return this.filterSlide[this.currentIndex]
             },
             getCurrentSearch () {
                 return this.$store.state.currentSearch
@@ -96,8 +118,35 @@
                         this.renderComponent = false
                     })
             },
+            slideChanged(e) {
+                console.log('slide change')
+                e.target.getActiveIndex().then(index => {
+                    this.currentIndex = index;
+                })
+            },
             setRenderComponent () {
                 this.renderComponent = true
+            },
+            async showToast (toastGeoLocStatus) {
+                const toast = await this.$ionic.toastController.create({
+                    message: toastGeoLocStatus,
+                    showCloseButton: false,
+                })
+                await toast.present();
+                setTimeout(() => {
+                    toast.dismiss();
+                }, 2000)
+            },
+            getCurrentPositionData (pos) {
+                let url = 'http://api.openweathermap.org/data/2.5/weather?q=' + rqst + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER;
+                console.log(url)
+                axios.get(url)
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
         },
     }

@@ -17,17 +17,15 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding" fullscreen>
-            <ion-spinner color="light"></ion-spinner>
+            <div class="ion-text-center" v-if="this.loading">
+                <ion-spinner color="light"></ion-spinner>
+            </div>
             <ion-list id="searchList">
 
-                <ion-item color="transparent" class="containerItem"
-                          v-for="(city, index) in searchCities"
+                <ModalSearchItem v-for="(city, index) in searchCities"
                           v-bind:key="city.id"
-                          v-on:click="chooseCity(city)">
-                    <ion-label color="light">{{city.name}}</ion-label>
-                    <country-flag slot="end" v-if="city.country !== ''"
-                                  :country="city.country" size='normal'/>
-                </ion-item>
+                          :city="city">
+                </ModalSearchItem>
 
             </ion-list>
         </ion-content>
@@ -35,31 +33,45 @@
 </template>
 
 <script>
+    import ModalSearchItem from '@/components/ModalSearchItem.vue'
     import CountryFlag from 'vue-country-flag'
     import store from '../store';
     export default {
         name: 'modal',
         components: {
-            CountryFlag
+            CountryFlag,
+            ModalSearchItem
         },
         data() {
             return {
                 search: '',
-                searchCities: []
+                searchCities: [],
+                loading: false
             }
         },
         created() {
             this.debouncedGetSearch = _.debounce(this.getSearch, 500)
         },
         mounted() {
+            this.$bus.$on('dismissTheModal', () => {
+                this.dismissModal()
+            })
         },
         watch: {
             search: function (newSearch, oldSearch) {
                 console.log("J'attends que vous arrêtiez de taper...")
+                this.loading = true
                 this.debouncedGetSearch()
             }
         },
-        computed: {},
+        computed: {
+            getFavorites() {
+                return store.state.favorites
+            },
+            isFavorite() {
+                return this.getFavorites.findIndex(favorite => favorite.id === this.city.id) !== -1;
+            },
+        },
         methods: {
             getSearch () {
                 if (this.search.length > 0 ) {
@@ -69,10 +81,10 @@
                 } else {
                     this.searchCities = []
                 }
+                this.loading = false
             },
-            chooseCity(city) {
-                store.commit('changeCurrentSearch', city)
-                this.dismissModal()
+            removeFromFavorites(city) {
+                store.commit('removeFavorite', city.id)
             },
             dismissModal() {
                 this.$bus.$emit('dismissModal')

@@ -24,6 +24,9 @@ export default new Vuex.Store({
     changeFavorites(state, val) {
       state.favorites = val
     },
+    addFavorite(state, city) {
+      state.favorites.unshift(city)
+    },
     removeFavorite(state, valId) {
       state.favorites.splice(state.favorites.findIndex(favorite => favorite.id === valId), 1)
     }
