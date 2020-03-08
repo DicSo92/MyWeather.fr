@@ -6,6 +6,9 @@
                     <ion-button>
                         <ion-icon slot="icon-only" name="settings" color="light"></ion-icon>
                     </ion-button>
+                    <ion-button @click="locateMe" v-show="!this.currentLocation" class="ion-text-center">
+                        <ion-icon slot="icon-only" name="navigate" color="light"></ion-icon>
+                    </ion-button>
                 </ion-buttons>
                 <ion-buttons slot="primary">
                     <ion-button @click="openSearch">
