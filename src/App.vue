@@ -20,7 +20,6 @@
         },
         mounted() {
             if (localStorage.getItem('favorites')) this.storeVueX('changeFavorites', JSON.parse(localStorage.getItem('favorites')))
-            if (localStorage.getItem('favoritesForecast')) this.storeVueX('changeFavoritesForecast', JSON.parse(localStorage.getItem('favorites')))
         },
         watch: {
             getCurrentSearch(val) {
@@ -28,7 +27,6 @@
             },
             getFavorites(val, old) {
                 this.storeLocal('favorites', val)
-                this.getWForecast(val)
             },
             getCurrentLocation(val) {
                 this.storeLocal('currentLocation', val)
@@ -52,43 +50,6 @@
             storeVueX: function (name, data) {
                 this.$store.commit(name, data)
             },
-
-            getWForecast (favorites) {
-                let i = 0
-                console.log(favorites)
-                if (favorites.infos) {
-                    for (let fav in favorites) {
-                        if (!fav.forecast) {
-                            console.log(fav)
-                            let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + fav.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                            axios.get(forecastUrl)
-                                .then(response => {
-                                    console.log('aucun favoritesForecast pour => ' + !fav.infos.name + ' -- Du coup ajout')
-
-                                    this.$store.commit('editFavorite', {infos: fav.infos, forecast: response.data})
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                })
-                        } else {
-                            if (fav.forecast.list[0].dt < Date.now - 12000) { // Si forecast trop ancien
-                                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + fav.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                                axios.get(forecastUrl)
-                                    .then(response => {
-                                        console.log('Forecast trop ancien pour => ' + !fav.infos.name + ' -- Du coup edit')
-
-                                        this.$store.commit('editFavorite', {infos: fav.infos, forecast: response.data})
-                                    })
-                                    .catch(error => {
-                                        console.log(error)
-                                    })
-                            }
-                        }
-                        i ++
-                    }
-                }
-            },
-
             forceRerender() {
                 this.renderComponent = false;
                 this.$nextTick(() => {

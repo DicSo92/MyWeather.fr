@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Home from '../views/Home.vue'
+import HomeWeather from '../views/HomeWeather.vue'
 
 import { IonicVueRouter } from '@ionic/vue';
 
@@ -9,10 +10,15 @@ export default new IonicVueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: Home
+    // },
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: HomeWeather
     },
     {
       path: '/about',

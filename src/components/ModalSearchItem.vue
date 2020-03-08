@@ -45,8 +45,8 @@
                 store.commit('removeFavorite', city.id)
             },
             chooseCity(city) {
-                store.commit('changeCurrentSearch', {infos: city, forecast: null})
                 this.$bus.$emit('dismissTheModal')
+                this.$bus.$emit('chooseCity', city)
             },
         }
     }

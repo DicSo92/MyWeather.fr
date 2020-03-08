@@ -1,5 +1,5 @@
 <template>
-    <div class="ion-page" v-if="this.renderFirstComponent">
+    <div class="ion-page">
         <ion-header >
             <ion-toolbar class="toolbar">
                 <ion-buttons slot="start">
@@ -12,7 +12,7 @@
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
                 </ion-buttons>
-                <ion-title>{{this.filterHeaderText}}</ion-title>
+                <ion-title ref="headerTitle">WeatherApp</ion-title>
             </ion-toolbar>
         </ion-header>
 
@@ -33,14 +33,23 @@
         </ion-content>
         <ion-content fullscreen class="ion-padding" scroll-y="false" v-else>
             <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
-                        v-if="this.renderComponent && this.filterSlide"
-                        v-bind:key="this.filterSlide.length"
-                        ref="slide" @ionSlideDidChange="slideChanged">
+                        v-bind:key="_.random(0, 10000)"
+                        ref="slide"
+                        @ionSlideDidChange="slideChanged">
 
+                <HomeSlide v-if="this.currentSearch"
+                           v-bind:key="this.currentSearch.infos.id"
+                           :city="this.currentSearch">
+                </HomeSlide>
 
-                <HomeSlide v-for="(citySlide, index) in this.filterSlide"
+                <HomeSlide v-if="this.currentLocation"
+                           v-bind:key="this.currentLocation.infos.id"
+                           :city="this.currentLocation">
+                </HomeSlide>
+
+                <HomeSlide v-for="(favoriteCity, index) in this.getFavorites"
                            v-bind:key="index"
-                           :city="citySlide">
+                           :city="favoriteCity">
                 </HomeSlide>
 
             </ion-slides>
@@ -65,20 +74,23 @@
                     speed: 400,
                     pager: true
                 },
-                renderComponent: true,
-                renderFirstComponent: true,
                 currentIndex: 0,
+                currentSlideData: null,
 
                 toastGeoLocStatus: '',
-                currentPosition: null
+
+                currentGeolocation: null,
+                currentLocation: null,
+                currentSearch: null
             }
         },
         created() {
             this.getLocation()
+            this.currentSearch = this.getCurrentSearch ? this.getCurrentSearch : null
         },
         mounted() {
-            this.$bus.$on('dismissModal', () => {
-                this.setRenderComponent()
+            this.$bus.$on('chooseCity', (city) => {
+                this.currentSearch = {infos: city, forecast: null}
             })
             this.$bus.$on('changeCurrentIndex', (index) => {
                 this.currentIndex = index
@@ -86,36 +98,24 @@
             this.$bus.$on('slideTo', (index) => {
                 this.$refs.slide.slideTo(index)
             })
+            this.$bus.$on('removeFromFavorites', (city) => {
+                // Change HeaderName
+                if (this.currentSearch) {
+                    this.changeHeaderName(this.currentSearch.infos.name)
+                } else if (!this.currentLocation && this.getFavorites) {
+                    this.changeHeaderName(this.getFavorites[0].infos.name)
+                }
+                if (!this.currentLocation && !this.getFavorites && !this.currentSearch) this.changeHeaderName('Weather App')
+            })
         },
         watch: {
-            getCurrentSearch () {
-                this.setRenderComponent()
+            currentSearch (search) {
+                this.$store.commit('changeCurrentSearch', {infos: search, forecast: null})
+
+                this.changeHeaderName(search.infos.name) // Change HeaderName
             },
         },
         computed: {
-            filterSlide() {
-                console.log(this.getFavorites)
-                if (this.getCurrentSearch && this.getFavorites) {
-                    if (this.getCurrentLocation){
-                        return [this.getCurrentSearch, this.getCurrentLocation, ...this.getFavorites]
-                    } else {
-                        return [this.getCurrentSearch, ...this.getFavorites]
-                    }
-                } else if (this.getFavorites && !this.getCurrentSearch) {
-                     if (this.getCurrentLocation){
-                        return [this.getCurrentLocation, ...this.getFavorites]
-                    } else {
-                        return [...this.getFavorites]
-                    }
-                } else if (this.getCurrentLocation){
-                    return [this.getCurrentLocation]
-                } else {
-                    return null
-                }
-            },
-            currentSlideData() {
-                return this.filterSlide[this.currentIndex]
-            },
             getCurrentSearch () {
                 return this.$store.state.currentSearch
             },
@@ -125,11 +125,11 @@
             getCurrentLocation () {
                 return this.$store.state.currentLocation
             },
-            filterHeaderText () {
-                return !this.getCurrentLocation && !this.getFavorites.length && !this.getCurrentSearch ? 'no geolocation' : this.currentSlideData.name
-            }
         },
         methods: {
+            changeHeaderName (text) {
+                this.$refs.headerTitle.innerHTML = text
+            },
             openSearch() {
                 return this.$ionic.modalController
                     .create({
@@ -137,17 +137,59 @@
                     })
                     .then(m => {
                         m.present()
-                        this.renderComponent = false
                     })
             },
-            slideChanged(e) {
+            async slideChanged(e) {
                 console.log('slide change')
                 e.target.getActiveIndex().then(index => {
-                    this.currentIndex = index;
+                    this.currentIndex = index
+
+                    let arrayCities = []
+                    if (this.currentSearch) arrayCities.push(this.currentSearch)
+                    if (this.currentLocation) arrayCities.push(this.currentLocation)
+                    if (this.getFavorites) arrayCities.push(...this.getFavorites)
+                    this.currentSlideData = arrayCities[index]
+
+                    this.changeHeaderName(this.currentSlideData.infos.name)
                 })
             },
-            setRenderComponent () {
-                this.renderComponent = true
+            async getLocation () {
+                if(!("geolocation" in navigator)) {
+                    this.showToast('Geolocation is not available on your device')
+                    return
+                }
+                navigator.geolocation.getCurrentPosition(pos => {
+                    this.showToast('Geolocation Authorized')
+                    console.log(pos)
+                    this.currentGeolocation = pos
+                    this.getCurrentPositionData(pos)
+                }, err => {
+                    this.showToast(err.message)
+                    this.$store.commit('changeCurrentLocation', null)
+                })
+            },
+            getCurrentPositionData (pos) {
+                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+
+                console.log(nowUrl)
+                axios.get(nowUrl)
+                    .then(currentWeather => {
+                        console.log('get currentLocation currentWeather')
+                        this.changeHeaderName(currentWeather.data.name) // Change Header Name
+                        axios.get(forecastUrl)
+                            .then(forecast => {
+                                console.log('get currentLocation forecast')
+                                this.currentLocation = {infos: currentWeather.data, forecast: forecast.data}
+                                this.$store.commit('changeCurrentLocation', {infos: currentWeather.data, forecast: forecast.data})
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            });
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
             },
             async showToast (toastGeoLocStatus) {
                 const toast = await this.$ionic.toastController.create({
@@ -159,21 +201,7 @@
                     toast.dismiss();
                 }, 2000)
             },
-            async getLocation () {
-                if(!("geolocation" in navigator)) {
-                    this.showToast('Geolocation is not available on your device')
-                    return
-                }
-                navigator.geolocation.getCurrentPosition(pos => {
-                    this.showToast('Geolocation Authorized')
-                    console.log(pos)
-                    this.currentPosition = pos
-                    this.getCurrentPositionData(pos)
-                }, err => {
-                    this.showToast(err.message)
-                    this.$store.commit('changeCurrentLocation', null)
-                })
-            },
+
             async locateMe() {
                 try {
                     await this.getLocation
@@ -181,30 +209,7 @@
                     console.log(e.message);
                 }
             },
-            getCurrentPositionData (pos) {
-                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
 
-                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                console.log(nowUrl)
-                axios.get(nowUrl)
-                    .then(currentWeather => {
-                        console.log('get currentLocation currentWeather')
-
-                        axios.get(forecastUrl)
-                            .then(forecast => {
-                                console.log('get currentLocation forecast')
-                                this.$store.commit('changeCurrentLocation', {infos: currentWeather.data, forecast: forecast})
-                                this.renderFirstComponent = true
-                            })
-                            .catch(error => {
-                                console.log(error)
-                            });
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    });
-
-            }
         },
     }
 </script>

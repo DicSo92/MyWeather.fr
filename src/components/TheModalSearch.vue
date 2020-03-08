@@ -17,7 +17,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding" fullscreen>
-            <div class="ion-text-center" v-if="this.loading">
+            <div class="ion-text-center" v-show="this.loading">
                 <ion-spinner color="light"></ion-spinner>
             </div>
             <ion-list id="searchList">
@@ -84,7 +84,6 @@
                 this.loading = false
             },
             dismissModal() {
-                this.$bus.$emit('dismissModal')
                 this.$ionic.modalController.dismiss()
             },
         }

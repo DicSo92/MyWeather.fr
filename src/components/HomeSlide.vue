@@ -1,10 +1,10 @@
 <template>
-    <ion-slide v-if="this.renderWeather" v-bind:key="city.infos.id + _.random(0, 1000)">
+    <ion-slide v-bind:key="city.infos.id + _.random(0, 1000)">
         <ion-item color="transparent">
             <ion-text color="light">
-                <h4>{{city.infos.name}} ---</h4>
-                <h4>{{this.currentData ? this.currentData.infos.weather[0].description : '--'}}</h4>
-                <h3>{{this.currentData ? this.currentData.infos.name : '-'}}</h3>
+                <h4 class="refCityName">{{city.infos.name}} ---</h4>
+                <h4>{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description : '--'}}</h4>
+                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>
                 <h4>{{this.forecastData ? this.forecastData.list[0].clouds.all : '-(--'}}</h4>
             </ion-text>
             <ion-buttons slot="end">
@@ -46,13 +46,13 @@
         },
         data() {
             return {
-                currentData: null,
+                currentWeatherData: null,
                 forecastData: null,
-                renderWeather: true
             }
         },
         mounted() {
             this.getCurrentWeatherData()
+            this.getWeatherForecastData()
         },
         watch: {},
         computed: {
@@ -66,7 +66,10 @@
                 return this.$store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.infos.id) !== -1;
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.infos.id) !== -1
+            },
+            isCurrentSearch() {
+                return this.getCurrentSearch.infos.id === this.city.infos.id
             },
         },
         methods: {
@@ -81,6 +84,7 @@
             },
             removeFromFavorites(city) {
                 this.$bus.$emit('changeCurrentIndex', 0)
+                this.$bus.$emit('removeFromFavorites', city)
                 this.$store.commit('removeFavorite', city.infos.id)
             },
             getCurrentWeatherData () {
@@ -89,34 +93,42 @@
                 axios.get(nowUrl)
                     .then(response => {
                         console.log(response.data)
-                        this.currentData = {infos: response.data, forecast: null}
-                        if (!this.isFavorite) {
-                            console.log('Get forecast if not favorite')
-                            this.getWeatherForecastData()
-                        } else {
-                            console.log('favorite')
-                            this.forecastData = this.city.forecast
-                            this.renderWeather = true
-                        }
+                        this.currentWeatherData = {infos: response.data, forecast: null}
                     })
                     .catch(error => {
                         console.log(error)
                     });
             },
             getWeatherForecastData () {
-                // if localstorage favoritesForecast time > 3h --> change it sinon ne pas faire la requete
+                console.log(this.city.infos.name + ' == getForecast test 1')
 
-                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                axios.get(forecastUrl)
-                    .then(response => {
-                        console.log('getForecast ')
-                        console.log(response.data)
-                        this.forecastData = response.data
-                        this.renderWeather = true
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    });
+                if (this.city.forecast) {
+                    console.log(this.city.infos.name + ' == getForecast test 2')
+                    if (this.city.forecast.list[0].dt < (Date.now()/1000 + 12000)) { // Si forecast trop ancien
+                        console.log(this.city.infos.name + ' == getForecast test 3')
+                        let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                        axios.get(forecastUrl)
+                            .then(response => {
+                                this.forecastData = response.data
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                    } else {
+                        console.log(this.city.infos.name + ' == getForecast test 4')
+                        this.forecastData = this.city.forecast
+                    }
+                } else {
+                    console.log(this.city.infos.name + ' == getForecast test 5')
+                    let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                    axios.get(forecastUrl)
+                        .then(response => {
+                            this.forecastData = response.data
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                }
             },
         },
     }
