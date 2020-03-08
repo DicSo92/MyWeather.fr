@@ -26,15 +26,12 @@
             getCurrentSearch(val) {
                 this.storeLocal('currentSearch', val)
             },
-            getFavorites(val) {
+            getFavorites(val, old) {
                 this.storeLocal('favorites', val)
-                // this.getWeatherForecast()
+                this.getWForecast(val)
             },
             getCurrentLocation(val) {
                 this.storeLocal('currentLocation', val)
-            },
-            getFavoritesForecast(val) {
-                this.storeLocal('favoritesForecast', val)
             }
         },
         computed: {
@@ -46,9 +43,6 @@
             },
             getCurrentLocation() {
                 return this.$store.state.currentLocation
-            },
-            getFavoritesForecast() {
-                return this.$store.state.favoritesForecast
             }
         },
         methods: {
@@ -58,62 +52,40 @@
             storeVueX: function (name, data) {
                 this.$store.commit(name, data)
             },
-            getWeatherForecast () {
-                // if localstorage favoritesForecast time > 3h --> change it sinon ne pas faire la requete
-                console.log('----------------')
-                console.log(this.getFavoritesForecast)
-                if (this.getFavoritesForecast.favoritesForecastDatas.length === 0) {
-                    let favoritesForecastDatas = []
-                    let dateForecast = 0
-                    for (let favorite in this.getFavorites) {
-                        let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + favorite.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                        axios.get(forecastUrl)
-                            .then(response => {
-                                console.log('aucun favoritesForecast')
-                                favoritesForecastDatas.push(response.data)
-                                dateForecast = response.data.list[0].dt
-                            })
-                            .catch(error => {
-                                console.log(error)
-                            })
-                    }
-                    let newFavoritesForecastDatas = { time: dateForecast, favoritesForecastDatas: favoritesForecastDatas}
-                    this.$store.commit('changeFavoritesForecast', newFavoritesForecastDatas)
-                } else {
-                    let favoritesForecastDatas = []
-                    let dateForecast = 0
-                    let newF = this.getFavoritesForecast.favoritesForecastDatas
-                    for (let favorite in this.getFavorites) {
-                        let favIndex = this.getFavoritesForecast.favoritesForecastDatas.findIndex(fav => fav.id === favorite.id)
-                        if (favIndex !== -1) {
-                            console.log('find in favorite')
-                            if (this.getFavoritesForecast.favoritesForecastDatas[favIndex].list[0].dt < Date.now()) { // nouvel requete
-                                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + favorite.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+
+            getWForecast (favorites) {
+                let i = 0
+                console.log(favorites)
+                if (favorites.infos) {
+                    for (let fav in favorites) {
+                        if (!fav.forecast) {
+                            console.log(fav)
+                            let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + fav.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                            axios.get(forecastUrl)
+                                .then(response => {
+                                    console.log('aucun favoritesForecast pour => ' + !fav.infos.name + ' -- Du coup ajout')
+
+                                    this.$store.commit('editFavorite', {infos: fav.infos, forecast: response.data})
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
+                        } else {
+                            if (fav.forecast.list[0].dt < Date.now - 12000) { // Si forecast trop ancien
+                                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + fav.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                                 axios.get(forecastUrl)
                                     .then(response => {
-                                        console.log('new request 3h')
-                                        newF = newF.splice(favIndex, 1, response.data)
-                                        dateForecast = response.data.list[0].dt
+                                        console.log('Forecast trop ancien pour => ' + !fav.infos.name + ' -- Du coup edit')
+
+                                        this.$store.commit('editFavorite', {infos: fav.infos, forecast: response.data})
                                     })
                                     .catch(error => {
                                         console.log(error)
                                     })
                             }
-                        } else {
-                            let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + favorite.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                            axios.get(forecastUrl)
-                                .then(response => {
-                                    console.log('not find in favorite')
-                                    newF = newF.splice(favIndex, 1, response.data)
-                                    dateForecast = response.data.list[0].dt
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                })
                         }
+                        i ++
                     }
-                    let newFavoritesForecastDatas = { time: dateForecast, favoritesForecastDatas: newF}
-                    this.$store.commit('changeFavoritesForecast', newFavoritesForecastDatas)
                 }
             },
 

@@ -1,9 +1,11 @@
 <template>
-    <ion-slide v-if="this.renderWeather" v-bind:key="city.id + _.random(0, 1000)">
+    <ion-slide v-if="this.renderWeather" v-bind:key="city.infos.id + _.random(0, 1000)">
         <ion-item color="transparent">
             <ion-text color="light">
-                <h4>{{city.name}}</h4>
-                <h3>{{this.currentData ? this.currentData.name : ''}}</h3>
+                <h4>{{city.infos.name}} ---</h4>
+                <h4>{{this.currentData ? this.currentData.infos.weather[0].description : '--'}}</h4>
+                <h3>{{this.currentData ? this.currentData.infos.name : '-'}}</h3>
+                <h4>{{this.forecastData ? this.forecastData.list[0].clouds.all : '-(--'}}</h4>
             </ion-text>
             <ion-buttons slot="end">
                 <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
@@ -64,31 +66,37 @@
                 return this.$store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.id === this.city.id) !== -1;
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.infos.id) !== -1;
             },
         },
         methods: {
             addToFavorites(city) {
-                if (this.getCurrentSearch && city.id === this.getCurrentSearch.id) {
+                if (this.getCurrentSearch && city.infos.id === this.getCurrentSearch.id) {
                     this.$store.commit('changeCurrentSearch', null)
                 }
-                this.$store.commit('addFavorite', city)
-                if (this.getCurrentLocation && this.getCurrentLocation.id !== city.id) {
+                this.$store.commit('addFavorite', {infos: city.infos, forecast: this.forecastData})
+                if (this.getCurrentLocation && this.getCurrentLocation.id !== city.infos.id) {
                     this.$bus.$emit('slideTo', 1)
                 }
             },
             removeFromFavorites(city) {
                 this.$bus.$emit('changeCurrentIndex', 0)
-                this.$store.commit('removeFavorite', city.id)
+                this.$store.commit('removeFavorite', city.infos.id)
             },
             getCurrentWeatherData () {
-                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.city.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+
                 axios.get(nowUrl)
                     .then(response => {
-                        this.currentData = response.data
-                        if (this.getFavorites.findIndex(favorite => favorite.id === this.city.id) === -1) {
+                        console.log(response.data)
+                        this.currentData = {infos: response.data, forecast: null}
+                        if (!this.isFavorite) {
+                            console.log('Get forecast if not favorite')
                             this.getWeatherForecastData()
-                            console.log('not in storage')
+                        } else {
+                            console.log('favorite')
+                            this.forecastData = this.city.forecast
+                            this.renderWeather = true
                         }
                     })
                     .catch(error => {
@@ -98,10 +106,11 @@
             getWeatherForecastData () {
                 // if localstorage favoritesForecast time > 3h --> change it sinon ne pas faire la requete
 
-                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                 axios.get(forecastUrl)
                     .then(response => {
                         console.log('getForecast ')
+                        console.log(response.data)
                         this.forecastData = response.data
                         this.renderWeather = true
                     })

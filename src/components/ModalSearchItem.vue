@@ -37,7 +37,7 @@
                 return store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.id === this.city.id) !== -1;
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.id) !== -1;
             },
         },
         methods: {
@@ -45,7 +45,7 @@
                 store.commit('removeFavorite', city.id)
             },
             chooseCity(city) {
-                store.commit('changeCurrentSearch', city)
+                store.commit('changeCurrentSearch', {infos: city, forecast: null})
                 this.$bus.$emit('dismissTheModal')
             },
         }

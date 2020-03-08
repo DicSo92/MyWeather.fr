@@ -69,7 +69,7 @@
                 return store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.id === this.city.id) !== -1;
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.id) !== -1;
             },
         },
         methods: {
@@ -82,9 +82,6 @@
                     this.searchCities = []
                 }
                 this.loading = false
-            },
-            removeFromFavorites(city) {
-                store.commit('removeFavorite', city.id)
             },
             dismissModal() {
                 this.$bus.$emit('dismissModal')
