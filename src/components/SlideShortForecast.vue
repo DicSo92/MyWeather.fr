@@ -7,7 +7,8 @@
                         <ion-text color="light">
                             <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
                         </ion-text>
-                        {{forecast.wind.speed}}
+<!--                        {{forecast.dt | moment("hA")}}-->
+                        {{forecast.dt | moment("from", "now", true)}}
                     </ion-col>
                 </ion-row>
             </ion-grid>

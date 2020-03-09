@@ -11,6 +11,13 @@ import '@/assets/css/custom-ionic.scss'
 import 'weather-icons-npm/css/weather-icons.css'
 import 'weather-icons-npm/css/weather-icons-wind.css'
 
+const moment = require('moment')
+require('moment/locale/fr')
+
+Vue.use(require('vue-moment'), {
+  moment
+})
+
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 

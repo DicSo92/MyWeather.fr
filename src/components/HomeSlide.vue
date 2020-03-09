@@ -2,7 +2,7 @@
     <ion-slide v-bind:key="city.infos.id + _.random(0, 1000)">
         <ion-item color="transparent">
             <ion-text color="light">
-                <h4 class="refCityName">{{city.infos.name}} ---</h4>
+                <h4 class="refCityName">{{city.infos.name}}</h4>
             </ion-text>
             <ion-buttons slot="end">
                 <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
@@ -17,12 +17,12 @@
                 </ion-button>
             </ion-buttons>
         </ion-item>
-        <ion-item color="transparent">
+        <ion-item color="transparent" class="ion-margin-top">
+            <ion-text color="light" slot="start" class="ion-padding-top ion-padding-bottom">
+                <i class="currentWeatherIcon wi" :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
+            </ion-text>
             <ion-text color="light">
                 <h4>{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description : '--'}}</h4>
-            </ion-text>
-            <ion-text color="light" slot="end">
-                <i class="currentWeatherIcon wi" :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
             </ion-text>
         </ion-item>
         <ion-item color="transparent">
@@ -187,12 +187,8 @@
         display: block;
     }
 
-    .bg-gray {
-        background-color: gray;
-        border: solid black 1px;
+    .refCityName {
+        font-size: 40px;
     }
 
-    .bg-blue-dark {
-        /*background-color: #000148;*/
-    }
 </style>

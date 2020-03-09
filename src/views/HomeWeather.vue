@@ -9,6 +9,9 @@
                     <ion-button @click="locateMe" v-show="!this.currentLocation" class="ion-text-center">
                         <ion-icon slot="icon-only" name="navigate" color="light"></ion-icon>
                     </ion-button>
+                    <ion-button @click="changeLang" class="ion-text-center">
+                        <ion-icon slot="icon-only" name="flask" color="light"></ion-icon>
+                    </ion-button>
                 </ion-buttons>
                 <ion-buttons slot="primary">
                     <ion-button @click="openSearch">
@@ -130,6 +133,9 @@
             },
         },
         methods: {
+            changeLang () {
+                this.$moment.locale('es')
+            },
             changeHeaderName (text) {
                 this.$refs.headerTitle.innerHTML = text
             },
