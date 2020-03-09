@@ -7,7 +7,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import CitiesJson from '@/ressources/city.list.min.json'
 
     export default {

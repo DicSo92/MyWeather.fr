@@ -6,8 +6,10 @@ import store from './store'
 // ---------------------------------------------------------------------------------------------------------------------
 import Ionic from '@ionic/vue';
 import '@ionic/core/css/ionic.bundle.css';
-
 import '@/assets/css/custom-ionic.scss'
+
+import 'weather-icons-npm/css/weather-icons.css'
+import 'weather-icons-npm/css/weather-icons-wind.css'
 
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
