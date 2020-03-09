@@ -9,16 +9,6 @@ export default new Vuex.Store({
         currentSearch: null,
         currentLocation: null,
         favorites: [],
-        sampleFavorite: [
-            {
-                infos: {name: 'paris', id: 145},
-                forecast: {list: []}
-            },
-            {
-                infos: {name: 'marseille', id: 145},
-                forecast: null
-            }
-            ]
     },
     getters: {},
     mutations: {

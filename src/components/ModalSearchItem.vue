@@ -17,7 +17,7 @@
     import store from '../store';
 
     export default {
-        name: 'modal',
+        name: 'ModalSearchItem',
         props: {
             city: Object,
         },

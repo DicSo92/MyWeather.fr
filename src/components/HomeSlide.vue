@@ -22,6 +22,7 @@
                 <i class="currentWeatherIcon wi" :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
             </ion-text>
             <ion-text color="light">
+                <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1) : '--'}} °C</p>
                 <h4>{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description : '--'}}</h4>
             </ion-text>
         </ion-item>
@@ -30,26 +31,25 @@
                 <ion-row>
                     <ion-col size="6">
                         <ion-text color="light">
-
+                            <i class="currentWindIcon wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
                         </ion-text>>
                     </ion-col>
                     <ion-col size="6">
                         <ion-text color="light">
-                            <i class="currentWindIcon wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
                             <h5>Deg : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.deg : '--'}}</h5>
                             <p>Speed : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.speed : '-'}}</p>
-                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>
+<!--                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>-->
                         </ion-text>
                     </ion-col>
                 </ion-row>
             </ion-grid>
         </ion-item>
-        <ion-item color="transparent">
-            <ion-text color="light">
-                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>
-                <h4>first forecast clouds : {{this.forecastData ? this.forecastData.list[0].clouds.all : '-(--'}}</h4>
-            </ion-text>
-        </ion-item>
+<!--        <ion-item color="transparent">-->
+<!--            <ion-text color="light">-->
+<!--                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>-->
+<!--                <h4>first forecast clouds : {{this.forecastData ? this.forecastData.list[0].clouds.all : '-(&#45;&#45;'}}</h4>-->
+<!--            </ion-text>-->
+<!--        </ion-item>-->
         <ion-grid>
             <ion-row>
                 <ion-text color="light">Short term Forecast</ion-text>
@@ -61,17 +61,22 @@
             </ion-row>
 
         </ion-grid>
+
+        <ListDailyForecast></ListDailyForecast>
+
     </ion-slide>
 </template>
 
 <script>
     import axios from 'axios'
     import SlideShortForecast from '@/components/SlideShortForecast.vue'
+    import ListDailyForecast from '@/components/ListDailyForecast.vue'
 
     export default {
         name: 'Home',
         components: {
-            SlideShortForecast
+            SlideShortForecast,
+            ListDailyForecast
         },
         props: {
             city: Object,
@@ -166,29 +171,31 @@
     }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
     #slidesPagesFav {
         height: 100%;
         color: white;
     }
+    .refCityName {
+        font-size: 20px;
+    }
     .currentWeatherIcon {
-        font-size: 80px;
+        font-size: 60px;
+    }
+    .weatherDegree {
+        font-size: 40px;
+        margin: 0;
     }
     .currentWindIcon {
         font-size: 40px;
     }
 
+
     .toolbar {
         border-bottom: 1px gray solid;
         color: white;
     }
-
     .swiper-slide {
         display: block;
     }
-
-    .refCityName {
-        font-size: 40px;
-    }
-
 </style>

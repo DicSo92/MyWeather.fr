@@ -7,8 +7,8 @@
                         <ion-text color="light">
                             <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
                         </ion-text>
-<!--                        {{forecast.dt | moment("hA")}}-->
-                        {{forecast.dt | moment("from", "now", true)}}
+                        {{forecast.dt | moment("hA")}}
+<!--                        {{forecast.dt | moment("from", "now", true)}}-->
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -27,7 +27,7 @@
 
 <script>
     export default {
-        name: 'Home',
+        name: 'SlideShortForecast',
         components: {},
         props: {
             forecast: Object,
@@ -73,7 +73,7 @@
 
 <style lang="scss">
     #slidesContainer {
-        padding-bottom: 25px;
+        padding-bottom: 10px;
     }
     .shortForecastSlide {
         --bullet-background: white;
@@ -86,5 +86,10 @@
 
     .forecastWeatherIcon {
         font-size: 30px
+    }
+    .swiper-container-horizontal>.swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction {
+        bottom: 0px;
+        left: 0;
+        width: 100%;
     }
 </style>

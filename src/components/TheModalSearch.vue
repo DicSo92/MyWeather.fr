@@ -37,7 +37,7 @@
     import CountryFlag from 'vue-country-flag'
     import store from '../store';
     export default {
-        name: 'modal',
+        name: 'TheModalSearch',
         components: {
             CountryFlag,
             ModalSearchItem

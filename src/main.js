@@ -13,6 +13,7 @@ import 'weather-icons-npm/css/weather-icons-wind.css'
 
 const moment = require('moment')
 require('moment/locale/fr')
+// require('moment/locale/es')
 
 Vue.use(require('vue-moment'), {
   moment
