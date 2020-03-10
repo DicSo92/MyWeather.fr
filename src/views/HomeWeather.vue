@@ -134,7 +134,7 @@
         },
         methods: {
             changeLang () {
-                this.$moment.locale('es')
+                this.$moment.locale('en')
             },
             changeHeaderName (text) {
                 this.$refs.headerTitle.innerHTML = text
@@ -244,8 +244,8 @@
         background-color: gray;
         border: solid black 1px;
     }
-
-    .bg-blue-dark {
-        /*background-color: #000148;*/
+    .list-ios {
+        margin-bottom: 0 !important;
     }
+
 </style>

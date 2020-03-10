@@ -18,6 +18,7 @@ require('moment/locale/fr')
 Vue.use(require('vue-moment'), {
   moment
 })
+// Vue.prototype.moment = moment
 
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'

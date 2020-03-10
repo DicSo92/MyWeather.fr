@@ -19,37 +19,55 @@
         </ion-item>
         <ion-item color="transparent" class="ion-margin-top">
             <ion-text color="light" slot="start" class="ion-padding-top ion-padding-bottom">
-                <i class="currentWeatherIcon wi" :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
+                <i class="currentWeatherIcon wi"
+                   :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
             </ion-text>
             <ion-text color="light">
-                <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1) : '--'}} °C</p>
-                <h4>{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description : '--'}}</h4>
+                <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1)
+                    : '--'}} °C</p>
+                <h4 style="margin: 0">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description :
+                    '--'}}</h4>
             </ion-text>
         </ion-item>
         <ion-item color="transparent">
             <ion-grid>
                 <ion-row>
-                    <ion-col size="6">
-                        <ion-text color="light">
-                            <i class="currentWindIcon wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
-                        </ion-text>>
+                    <ion-col size="4">
+
                     </ion-col>
-                    <ion-col size="6">
+                    <ion-col size="4">
                         <ion-text color="light">
-                            <h5>Deg : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.deg : '--'}}</h5>
-                            <p>Speed : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.speed : '-'}}</p>
-<!--                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>-->
+
+                            <!--                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>-->
                         </ion-text>
+                    </ion-col>
+                    <ion-col size="4">
+                        <ion-row class="ion-justify-content-between ion-align-items-center">
+                            <ion-text color="light">
+                                <h5 class="ion-no-margin">
+                                    <i class="currentWindIcon wi wi-wind"
+                                       :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
+                                </h5>
+                            </ion-text>
+                            <ion-text color="light">
+                                <p class="ion-no-margin degree">{{this.currentWeatherData ?
+                                    this.currentWeatherData.infos.wind.deg : '--'}}<span class="degreeSymbol">°</span></p>
+                                <p class="ion-no-margin">
+                                    {{this.currentWeatherData ? _.round(this.currentWeatherData.infos.wind.speed*3.6, 1) : '-'}}
+                                    <span class="kmh"> km/h</span>
+                                </p>
+                            </ion-text>
+                        </ion-row>
                     </ion-col>
                 </ion-row>
             </ion-grid>
         </ion-item>
-<!--        <ion-item color="transparent">-->
-<!--            <ion-text color="light">-->
-<!--                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>-->
-<!--                <h4>first forecast clouds : {{this.forecastData ? this.forecastData.list[0].clouds.all : '-(&#45;&#45;'}}</h4>-->
-<!--            </ion-text>-->
-<!--        </ion-item>-->
+        <!--        <ion-item color="transparent">-->
+        <!--            <ion-text color="light">-->
+        <!--                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>-->
+        <!--                <h4>first forecast clouds : {{this.forecastData ? this.forecastData.list[0].clouds.all : '-(&#45;&#45;'}}</h4>-->
+        <!--            </ion-text>-->
+        <!--        </ion-item>-->
         <ion-grid>
             <ion-row>
                 <ion-text color="light">Short term Forecast</ion-text>
@@ -62,7 +80,7 @@
 
         </ion-grid>
 
-        <ListDailyForecast></ListDailyForecast>
+        <ListDailyForecast v-if="this.forecastData" :forecast="this.forecastData"></ListDailyForecast>
 
     </ion-slide>
 </template>
@@ -96,7 +114,7 @@
             getCurrentLocation() {
                 return this.$store.state.currentLocation
             },
-            getCurrentSearch () {
+            getCurrentSearch() {
                 return this.$store.state.currentSearch
             },
             getFavorites() {
@@ -124,7 +142,7 @@
                 this.$bus.$emit('removeFromFavorites', city)
                 this.$store.commit('removeFavorite', city.infos.id)
             },
-            getCurrentWeatherData () {
+            getCurrentWeatherData() {
                 let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
 
                 axios.get(nowUrl)
@@ -136,12 +154,12 @@
                         console.log(error)
                     });
             },
-            getWeatherForecastData () {
+            getWeatherForecastData() {
                 console.log(this.city.infos.name + ' == getForecast test 1')
 
                 if (this.city.forecast) {
                     console.log(this.city.infos.name + ' == getForecast test 2')
-                    if (this.city.forecast.list[0].dt < (Date.now()/1000 + 12000)) { // Si forecast trop ancien
+                    if (this.city.forecast.list[0].dt < (Date.now() / 1000 + 12000)) { // Si forecast trop ancien
                         console.log(this.city.infos.name + ' == getForecast test 3')
                         let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                         axios.get(forecastUrl)
@@ -189,7 +207,17 @@
     .currentWindIcon {
         font-size: 40px;
     }
-
+    .degreeSymbol {
+        font-size: 15px;
+        color: gray;
+    }
+    .kmh {
+        color: gray;
+        font-size: 12px;
+    }
+    .degree {
+        font-size: 12px;
+    }
 
     .toolbar {
         border-bottom: 1px gray solid;

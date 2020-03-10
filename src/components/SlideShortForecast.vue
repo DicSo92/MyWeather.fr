@@ -5,10 +5,14 @@
                 <ion-row v-if="forecast">
                     <ion-col size="3" class="forecastItem" v-for="(forecast, index) in fourForecast">
                         <ion-text color="light">
+                            <p class="ion-no-margin" style="font-size: 11px; color: gray">
+                                {{forecast.dt | moment("dddd")}}
+                            </p>
+                            <p class="ion-no-margin" style="font-size: 14px;">
+                                {{forecast.dt | moment("ha")}}
+                            </p>
                             <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
                         </ion-text>
-                        {{forecast.dt | moment("hA")}}
-<!--                        {{forecast.dt | moment("from", "now", true)}}-->
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -78,6 +82,7 @@
     .shortForecastSlide {
         --bullet-background: white;
         --bullet-background-active: white;
+        border-top: 1px solid #757575;
     }
     .forecastItem {
         border-right: 1px solid #aaaaaa;
