@@ -1,16 +1,21 @@
 <template>
     <div id="app">
         <ion-app id="backgroundImg">
-            <ion-vue-router/>
+            <TheMenu></TheMenu>
+            <ion-vue-router id="main-content"/>
         </ion-app>
     </div>
 </template>
 
 <script>
     import CitiesJson from '@/ressources/city.list.min.json'
+    import TheMenu from '@/components/TheMenu.vue'
 
     export default {
         name: 'modal',
+        components: {
+            TheMenu
+        },
         data() {
             return {}
         },

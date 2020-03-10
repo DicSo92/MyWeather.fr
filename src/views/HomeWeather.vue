@@ -1,9 +1,9 @@
 <template>
     <div class="ion-page">
-        <ion-header >
+        <ion-header>
             <ion-toolbar class="toolbar">
                 <ion-buttons slot="start">
-                    <ion-button>
+                    <ion-button @click="openMenu">
                         <ion-icon slot="icon-only" name="settings" color="light"></ion-icon>
                     </ion-button>
                     <ion-button @click="locateMe" v-show="!this.currentLocation" class="ion-text-center">
@@ -22,21 +22,8 @@
             </ion-toolbar>
         </ion-header>
 
-        <ion-content fullscreen class="ion-padding" scroll-y="false" v-if="!this.getCurrentLocation && !this.getFavorites.length && !this.getCurrentSearch">
-            <ion-text color="light" class="ion-text-center">
-                <h4>Do a search !</h4>
-            </ion-text>
-            <ion-button @click="openSearch" class="ion-text-center">
-                <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
-            </ion-button>
-            <ion-text color="light" class="ion-text-center">
-                <h4>OR</h4>
-                <h4>Activate Geolocation</h4>
-            </ion-text>
-            <ion-button @click="locateMe" class="ion-text-center">
-                <ion-icon slot="icon-only" name="compass" color="light"></ion-icon>
-            </ion-button>
-        </ion-content>
+        <TheNoDataPage v-if="!this.getCurrentLocation && !this.getFavorites.length && !this.getCurrentSearch"></TheNoDataPage>
+
         <ion-content fullscreen class="ion-padding" scroll-y="false" v-else>
             <ion-slides id="slidesPagesFav" pager="true" :options="this.slideOpts"
                         v-bind:key="_.random(0, 10000)"
@@ -66,12 +53,14 @@
 <script>
     import TheModalSearch from '@/components/TheModalSearch.vue'
     import HomeSlide from '@/components/HomeSlide.vue'
+    import TheNoDataPage from '@/components/TheNoDataPage.vue'
     import axios from 'axios'
 
     export default {
         name: 'Home',
         components: {
-            HomeSlide
+            HomeSlide,
+            TheNoDataPage
         },
         data() {
             return {
@@ -95,6 +84,12 @@
             this.currentSearch = this.getCurrentSearch ? this.getCurrentSearch : null
         },
         mounted() {
+            this.$bus.$on('openSearch', () => {
+                this.openSearch()
+            })
+            this.$bus.$on('locateMe', () => {
+                this.locateMe()
+            })
             this.$bus.$on('chooseCity', (city) => {
                 this.currentSearch = {infos: city, forecast: null}
             })
@@ -105,7 +100,6 @@
                 this.$refs.slide.slideTo(index)
             })
             this.$bus.$on('removeFromFavorites', (city) => {
-                // Change HeaderName
                 if (this.currentSearch) {
                     this.changeHeaderName(this.currentSearch.infos.name)
                 } else if (!this.currentLocation && this.getFavorites) {
@@ -117,8 +111,7 @@
         watch: {
             currentSearch (search) {
                 this.$store.commit('changeCurrentSearch', {infos: search, forecast: null})
-
-                this.changeHeaderName(search.infos.name) // Change HeaderName
+                this.changeHeaderName(search.infos.name)
             },
         },
         computed: {
@@ -133,6 +126,9 @@
             },
         },
         methods: {
+            openMenu () {
+                this.$bus.$emit('openMenu')
+            },
             changeLang () {
                 this.$moment.locale('en')
             },
@@ -143,14 +139,13 @@
                 return this.$ionic.modalController
                     .create({
                         component: TheModalSearch,
-                    })
-                    .then(m => {
+                    }).then(m => {
                         m.present()
                     })
             },
-            async slideChanged(e) {
+            async slideChanged() {
                 console.log('slide change')
-                e.target.getActiveIndex().then(index => {
+                this.$refs.slide.getActiveIndex().then(index => {
                     this.currentIndex = index
 
                     let arrayCities = []
@@ -210,7 +205,6 @@
                     toast.dismiss();
                 }, 2000)
             },
-
             async locateMe() {
                 try {
                     await this.getLocation
@@ -247,5 +241,4 @@
     .list-ios {
         margin-bottom: 0 !important;
     }
-
 </style>

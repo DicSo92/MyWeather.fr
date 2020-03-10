@@ -1,87 +1,90 @@
 <template>
-    <ion-slide v-bind:key="city.infos.id + _.random(0, 1000)">
-        <ion-item color="transparent">
-            <ion-text color="light">
-                <h4 class="refCityName">{{city.infos.name}}</h4>
-            </ion-text>
-            <ion-buttons slot="end">
-                <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
-                    <ion-icon slot="icon-only"
-                              name="star"
-                              color="warning"></ion-icon>
-                </ion-button>
-                <ion-button v-if="!isFavorite" @click="addToFavorites(city)">
-                    <ion-icon slot="icon-only"
-                              name="star-outline"
-                              color="light"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-        </ion-item>
-        <ion-item color="transparent" class="ion-margin-top">
-            <ion-text color="light" slot="start" class="ion-padding-top ion-padding-bottom">
-                <i class="currentWeatherIcon wi"
-                   :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
-            </ion-text>
-            <ion-text color="light">
-                <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1)
-                    : '--'}} °C</p>
-                <h4 style="margin: 0">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description :
-                    '--'}}</h4>
-            </ion-text>
-        </ion-item>
-        <ion-item color="transparent">
-            <ion-grid>
-                <ion-row>
-                    <ion-col size="4">
+    <ion-slide v-bind:key="city.infos.id">
+        <div class="slideContainer ion-padding-bottom">
+            <div class="ion-margin-bottom currentInfosContainer">
+                <ion-item color="transparent">
+                    <ion-text color="light">
+                        <h4 class="refCityName">{{city.infos.name}}</h4>
+                    </ion-text>
+                    <ion-buttons slot="end">
+                        <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
+                            <ion-icon slot="icon-only"
+                                      name="star"
+                                      color="warning"></ion-icon>
+                        </ion-button>
+                        <ion-button v-if="!isFavorite" @click="addToFavorites(city)">
+                            <ion-icon slot="icon-only"
+                                      name="star-outline"
+                                      color="light"></ion-icon>
+                        </ion-button>
+                    </ion-buttons>
+                </ion-item>
+                <ion-item color="transparent" class="ion-margin-top">
+                    <ion-text color="light" slot="start" class="ion-padding-top ion-padding-bottom">
+                        <i class="currentWeatherIcon wi"
+                           :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
+                    </ion-text>
+                    <ion-text color="light">
+                        <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1)
+                            : '--'}} °C</p>
+                        <h4 style="margin: 0">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description :
+                            '--'}}</h4>
+                    </ion-text>
+                </ion-item>
+                <ion-item color="transparent">
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col size="4">
 
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-text color="light">
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text color="light">
 
-                            <!--                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>-->
-                        </ion-text>
-                    </ion-col>
-                    <ion-col size="4">
-                        <ion-row class="ion-justify-content-between ion-align-items-center">
+                                    <!--                            <p>Gust : {{this.currentWeatherData ? this.currentWeatherData.infos.wind.gust : '-'}}</p>-->
+                                </ion-text>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-row class="ion-justify-content-between ion-align-items-center">
+                                    <ion-text color="light">
+                                        <h5 class="ion-no-margin">
+                                            <i class="currentWindIcon wi wi-wind"
+                                               :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
+                                        </h5>
+                                    </ion-text>
+                                    <ion-text color="light">
+                                        <p class="ion-no-margin degree">{{this.currentWeatherData ?
+                                            this.currentWeatherData.infos.wind.deg : '--'}}<span class="degreeSymbol">°</span></p>
+                                        <p class="ion-no-margin">
+                                            {{this.currentWeatherData ? _.round(this.currentWeatherData.infos.wind.speed*3.6, 1) : '-'}}
+                                            <span class="kmh"> km/h</span>
+                                        </p>
+                                    </ion-text>
+                                </ion-row>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+            </div>
+
+            <div class="forecastInfosContainer">
+                <ion-text color="light" class="ion-text-start">Short term Forecast</ion-text>
+                <div class="blueTransparent forecastInfos">
+                    <ion-grid class="">
+                        <ion-row>
                             <ion-text color="light">
-                                <h5 class="ion-no-margin">
-                                    <i class="currentWindIcon wi wi-wind"
-                                       :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
-                                </h5>
-                            </ion-text>
-                            <ion-text color="light">
-                                <p class="ion-no-margin degree">{{this.currentWeatherData ?
-                                    this.currentWeatherData.infos.wind.deg : '--'}}<span class="degreeSymbol">°</span></p>
-                                <p class="ion-no-margin">
-                                    {{this.currentWeatherData ? _.round(this.currentWeatherData.infos.wind.speed*3.6, 1) : '-'}}
-                                    <span class="kmh"> km/h</span>
-                                </p>
+                                <h6 class="weekDay">Mardi <span class="weekDayGrey">TODAY</span></h6>
                             </ion-text>
                         </ion-row>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-        </ion-item>
-        <!--        <ion-item color="transparent">-->
-        <!--            <ion-text color="light">-->
-        <!--                <h3>{{this.currentWeatherData ? this.currentWeatherData.infos.name : '-'}}</h3>-->
-        <!--                <h4>first forecast clouds : {{this.forecastData ? this.forecastData.list[0].clouds.all : '-(&#45;&#45;'}}</h4>-->
-        <!--            </ion-text>-->
-        <!--        </ion-item>-->
-        <ion-grid>
-            <ion-row>
-                <ion-text color="light">Short term Forecast</ion-text>
-            </ion-row>
-            <ion-row v-if="this.forecastData">
-
-                <SlideShortForecast :forecast="this.forecastData"></SlideShortForecast>
-
-            </ion-row>
-
-        </ion-grid>
-
-        <ListDailyForecast v-if="this.forecastData" :forecast="this.forecastData"></ListDailyForecast>
-
+                        <ion-row v-if="this.forecastData">
+                            <SlideShortForecast :forecast="this.forecastData"></SlideShortForecast>
+                        </ion-row>
+                    </ion-grid>
+                    <ion-item class="ion-margin-top" color="transparent">
+                        <ListDailyForecast v-if="this.forecastData" :forecast="this.forecastData"></ListDailyForecast>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
     </ion-slide>
 </template>
 
@@ -218,12 +221,40 @@
     .degree {
         font-size: 12px;
     }
-
     .toolbar {
         border-bottom: 1px gray solid;
         color: white;
     }
     .swiper-slide {
         display: block;
+    }
+    .forecastHeader {
+        border-bottom: 1px solid #ffffff60;
+    }
+    .weekDay {
+        margin: 6px;
+    }
+    .weekDayGrey {
+        color: grey;
+        font-size: 12px;
+    }
+    .blueTransparent {
+        background-color:  rgba(0, 5, 30, 0.3);
+        border-radius: 10px;
+        border: 1px solid #ffffff25;
+    }
+
+    .slideContainer {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .currentInfosContainer {
+        flex-grow: 2;
+    }
+    .forecastInfosContainer {
+        flex-shrink: 0;
+    }
+    .forecastInfos {
     }
 </style>

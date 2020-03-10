@@ -31,7 +31,6 @@
             })
             dayList = dayList.filter((a, b) => dayList.indexOf(a) === b)
 
-
             let listDailyArray = []
             dayList.forEach((day) => {
                 let dailyArray = this.forecast.list.filter(hourly => this.$moment(hourly.dt*1000).format("D") === day)
@@ -40,10 +39,8 @@
             this.forecastDay = listDailyArray
         },
         watch: {},
-        computed: {
-        },
-        methods: {
-        },
+        computed: {},
+        methods: {},
     }
 </script>
 
@@ -52,18 +49,12 @@
         height: 25vh;
         overflow-y: scroll;
         display: block;
-        border-top: 1px solid #757575;
+        /*border-top: 1px solid #757575;*/
     }
     #searchList {
         background-color: transparent;
         .containerItem {
             border-bottom: 1px solid white;
         }
-    }
-    .grayText {
-        color: gray;
-    }
-    .orangeText {
-        color: coral;
     }
 </style>

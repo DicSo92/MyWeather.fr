@@ -30,7 +30,6 @@
 </template>
 
 <script>
-    // import axios from 'axios'
     export default {
         name: 'ListDailyForecastItem',
         components: {
@@ -51,7 +50,6 @@
             },
             getMaxTemp () {
                 return _.round(this.dailyForecast.reduce((prev, curr) => prev.main.temp > curr.main.temp ? prev : curr).main.temp, 1)
-
             }
         },
         methods: {
@@ -60,18 +58,6 @@
 </script>
 
 <style lang="scss">
-    .listDays  {
-        height: 25vh;
-        overflow-y: scroll;
-        display: block;
-        border-top: 1px solid #757575;
-    }
-    #searchList {
-        background-color: transparent;
-        .containerItem {
-            border-bottom: 1px solid white;
-        }
-    }
     .grayText {
         color: gray;
     }

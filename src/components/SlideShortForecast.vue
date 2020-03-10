@@ -2,30 +2,28 @@
     <ion-slides class="shortForecastSlide" pager="true" :options="this.slideOpts">
         <ion-slide v-for="fourForecast in this.forecastArray" id="slidesContainer">
             <ion-grid>
-                <ion-row v-if="forecast">
+                <ion-row v-if="forecast" class="rowContainer">
                     <ion-col size="3" class="forecastItem" v-for="(forecast, index) in fourForecast">
                         <ion-text color="light">
                             <p class="ion-no-margin" style="font-size: 11px; color: gray">
                                 {{forecast.dt | moment("dddd")}}
                             </p>
-                            <p class="ion-no-margin" style="font-size: 14px;">
-                                {{forecast.dt | moment("ha")}}
-                            </p>
-                            <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
                         </ion-text>
+                        <div class="forecastText">
+                            <ion-text color="light">
+                                <p class="ion-no-margin" style="font-size: 12px;">
+                                    {{forecast.dt | moment("ha")}}
+                                </p>
+                                <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
+                                <p class="ion-no-margin" style="font-size: 14px;">
+                                    {{_.round(forecast.main.temp, 1)}}°
+                                </p>
+                            </ion-text>
+                        </div>
                     </ion-col>
                 </ion-row>
             </ion-grid>
         </ion-slide>
-<!--        <ion-slide>-->
-<!--            <ion-grid>-->
-<!--                <ion-row v-if="forecast">-->
-<!--                    <ion-col size="3" class="bg-gray" v-for="(forecast, index) in forecast.list.slice(0, 4)">-->
-<!--                        {{forecast.wind.speed}}-->
-<!--                    </ion-col>-->
-<!--                </ion-row>-->
-<!--            </ion-grid>-->
-<!--        </ion-slide>-->
     </ion-slides>
 </template>
 
@@ -53,24 +51,8 @@
         },
         watch: {},
         computed: {
-            getCurrentLocation() {
-                return this.$store.state.currentLocation
-            },
-            getCurrentSearch () {
-                return this.$store.state.currentSearch
-            },
-            getFavorites() {
-                return this.$store.state.favorites
-            },
-            isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.infos.id) !== -1
-            },
-            isCurrentSearch() {
-                return this.getCurrentSearch.infos.id === this.city.infos.id
-            },
         },
         methods: {
-
         },
     }
 </script>
@@ -82,13 +64,22 @@
     .shortForecastSlide {
         --bullet-background: white;
         --bullet-background-active: white;
-        border-top: 1px solid #757575;
+        /*border-top: 1px solid #757575;*/
     }
     .forecastItem {
-        border-right: 1px solid #aaaaaa;
-        border-left: 1px solid #aaaaaa;
+        padding-left: 0;
+        padding-right: 0;
     }
-
+    .rowContainer {
+        .forecastItem:last-child {
+            .forecastText {
+                border-right: 1px solid #ffffff50;
+            }
+        }
+    }
+    .forecastText {
+        border-left: 1px solid #ffffff50;
+    }
     .forecastWeatherIcon {
         font-size: 30px
     }
