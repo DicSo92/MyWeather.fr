@@ -6,8 +6,8 @@
                     {{dailyForecast[0].dt | moment("dddd")}}
                 </ion-label>
             </ion-col>
-            <ion-col size="4">
-                <ion-text color="light" class="ion-padding-top ion-padding-bottom">
+            <ion-col size="4" class="ion-text-center">
+                <ion-text color="light">
                     <i class="currentWeatherIcon wi" :class="'wi-owm-' + dailyForecast[0].weather[0].id"></i>
                 </ion-text>
             </ion-col>
@@ -15,12 +15,12 @@
                 <ion-row class="ion-justify-content-around ion-no-padding">
                     <ion-col class="ion-no-padding">
                         <ion-text>
-                            <h5 class="ion-no-margin grayText">{{this.getMinTemp}}°</h5>
+                            <h6 class="ion-no-margin grayText">{{this.getMinTemp}}°</h6>
                         </ion-text>
                     </ion-col>
                     <ion-col class="ion-no-padding">
                         <ion-text>
-                            <h5 class="ion-no-margin orangeText">{{this.getMaxTemp}}°</h5>
+                            <h6 class="ion-no-margin orangeText">{{this.getMaxTemp}}°</h6>
                         </ion-text>
                     </ion-col>
                 </ion-row>
@@ -40,6 +40,8 @@
         data() {
             return {
             }
+        },
+        created () {
         },
         mounted() {
         },

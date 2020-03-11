@@ -96,7 +96,7 @@
 
     }
     #searchBar {
-        /*--background: #990000;*/
+        --background: transparent;
         --color: white;
         --icon-color: white;
         /*--box-shadow: 0px 0px 0px 13px #ffffff;*/
