@@ -3,7 +3,7 @@
         <ion-row class="ion-align-items-center">
             <ion-col size="4">
                 <ion-label color="light" class="ion-float-start">
-                    {{dailyForecast[0].dt | moment("dddd")}}
+                    {{(dailyForecast[0].dt + this.getTimezone)*1000 | moment("dddd")}}
                 </ion-label>
             </ion-col>
             <ion-col size="4" class="ion-text-center">
@@ -36,6 +36,7 @@
         },
         props: {
             dailyForecast: Array,
+            timezone: Number
         },
         data() {
             return {
@@ -52,6 +53,9 @@
             },
             getMaxTemp () {
                 return _.round(this.dailyForecast.reduce((prev, curr) => prev.main.temp > curr.main.temp ? prev : curr).main.temp, 1)
+            },
+            getTimezone () {
+                return this.timezone-3600
             }
         },
         methods: {

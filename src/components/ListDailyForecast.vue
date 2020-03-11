@@ -3,7 +3,7 @@
         <ion-content overflow-scroll="true" color="transparent" class="listDays" v-if="this.forecastDay.length > 0">
             <ion-list id="searchList">
 
-                <ListDailyForecastItem v-for="(day, index) in forecastDay" :dailyForecast="day"></ListDailyForecastItem>
+                <ListDailyForecastItem v-for="(day, index) in forecastDay" :dailyForecast="day" :timezone="forecast.city.timezone"></ListDailyForecastItem>
 
             </ion-list>
         </ion-content>

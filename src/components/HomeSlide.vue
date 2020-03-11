@@ -6,7 +6,7 @@
                     <ion-row class="ion-margin-bottom ion-justify-content-between">
                         <ion-text color="light" class="ion-text-start">
                             <h4 class="refCityName">{{city.infos.name}}</h4>
-                            <h6 class="currentDate">{{this.currentWeatherData ? this.$moment(this.currentWeatherData.infos.dt*1000).format("LLLL") : '--'}}</h6>
+                            <h6 class="currentDate">{{this.currentWeatherData ? this.$moment((this.currentWeatherData.infos.dt + this.getTimezone)*1000).format("LLLL") : '--'}}</h6>
                         </ion-text>
                         <ion-buttons>
                             <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
@@ -51,15 +51,21 @@
                     </ion-row>
 
                     <ion-row class="ion-justify-content-around ion-no-padding">
-                        <ion-col class="degreeContainer">
+
+                        <ion-col class="nightDayParabolContainer degreeContainer">
+                            <NightDayCurve v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></NightDayCurve>
+                        </ion-col>
+
+                        <ion-col class="degreeContainer ion-justify-content-end">
                             <ion-row class="ion-justify-content-start ion-align-items-center">
                                 <ion-text color="light">
-                                    <i class="iconSize3 wi wi-wind"
-                                       :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
+                                    <i class="iconSize3 wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
                                 </ion-text>
                                 <ion-text color="light">
                                     <p class="ion-no-margin degree">{{this.currentWeatherData ?
-                                        this.currentWeatherData.infos.wind.deg : '--'}}<span class="degreeSymbol">°</span></p>
+                                        this.currentWeatherData.infos.wind.deg : '--'}}
+                                        <span class="degreeSymbol">°</span>
+                                    </p>
                                 </ion-text>
                             </ion-row>
                             <ion-text color="light" class="ion-text-start">
@@ -69,7 +75,8 @@
                                 </p>
                             </ion-text>
                         </ion-col>
-                        <ion-col class="degreeContainer">
+
+                        <ion-col class="degreeContainer ion-justify-content-end">
                             <ion-row class="ion-align-items-center">
                                 <ion-text color="light">
                                     <i class="iconSize2 wi wi-raindrops"></i>
@@ -87,16 +94,13 @@
                                 </ion-text>
                             </ion-row>
                         </ion-col>
-                        <ion-col class="degreeContainer">
 
-                        </ion-col>
                     </ion-row>
-
                 </ion-grid>
             </div>
 
             <div class="forecastInfosContainer" ref="forecastInfosContainer">
-<!--                <ion-text color="light" class="ion-text-start">Short term Forecast</ion-text>-->
+                <!--                <ion-text color="light" class="ion-text-start">Short term Forecast</ion-text>-->
                 <div class="blueTransparent forecastInfos">
                     <ion-grid>
                         <ion-row>
@@ -121,12 +125,14 @@
     import axios from 'axios'
     import SlideShortForecast from '@/components/SlideShortForecast.vue'
     import ListDailyForecast from '@/components/ListDailyForecast.vue'
+    import NightDayCurve from '@/components/NightDayCurve.vue'
 
     export default {
         name: 'Home',
         components: {
             SlideShortForecast,
-            ListDailyForecast
+            ListDailyForecast,
+            NightDayCurve
         },
         props: {
             city: Object,
@@ -165,6 +171,9 @@
             isCurrentSearch() {
                 return this.getCurrentSearch.infos.id === this.city.infos.id
             },
+            getTimezone () {
+                return this.currentWeatherData.infos.timezone-3600
+            }
         },
         methods: {
             addToFavorites(city) {
@@ -229,6 +238,9 @@
 </script>
 
 <style scoped lang="scss">
+    .nightDayParabolContainer {
+        flex-grow: 2;
+    }
     #slidesPagesFav {
         height: 100%;
         color: white;
@@ -285,15 +297,15 @@
         font-size: 12px;
     }
     .blueTransparent {
-        background-color:  rgba(0, 5, 30, 0.3);
+        background-color: rgba(0, 5, 30, 0.3);
         border-radius: 10px;
         border: 1px solid #ffffff25;
     }
-
     .slideContainer {
         height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
     }
     .currentInfosContainer {
         /*flex-grow: 2;*/
@@ -312,7 +324,7 @@
     .degreeContainer {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: start;
     }
     .weatherIconContainer {
         display: flex;

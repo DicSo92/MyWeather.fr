@@ -6,13 +6,13 @@
                         <ion-col size="3" class="forecastItem" v-for="(forecast, index) in fourForecast">
                             <ion-text color="light">
                                 <p class="ion-no-margin" style="font-size: 11px; color: gray">
-                                    {{forecast.dt | moment("dddd")}}
+                                    {{(forecast.dt + getTimezone)*1000 | moment("dddd")}}
                                 </p>
                             </ion-text>
                             <div class="forecastText">
                                 <ion-text color="light">
                                     <p class="ion-no-margin" style="font-size: 12px;">
-                                        {{forecast.dt | moment("LT")}}
+                                        {{(forecast.dt + getTimezone)*1000 | moment("LT")}}
                                     </p>
                                     <i class="forecastWeatherIcon wi" :class="'wi-owm-' + forecast.weather[0].id"></i>
                                     <p class="ion-no-margin" style="font-size: 14px;">
@@ -56,6 +56,9 @@
         watch: {
         },
         computed: {
+            getTimezone () {
+                return this.forecast.city.timezone - 3600
+            }
         },
         methods: {
         },
