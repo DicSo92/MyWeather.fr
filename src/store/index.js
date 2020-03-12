@@ -8,6 +8,7 @@ export default new Vuex.Store({
         cities: null,
         currentSearch: null,
         currentLocation: null,
+        currentSlideData: null,
         favorites: [],
     },
     getters: {},
@@ -23,6 +24,9 @@ export default new Vuex.Store({
         },
         changeFavorites(state, val) {
             state.favorites = val
+        },
+        changeCurrentSlideData(state, val) {
+            state.currentSlideData = val
         },
         addFavorite(state, city) {
             state.favorites.push(city)

@@ -154,9 +154,9 @@
                     if (this.getFavorites) arrayCities.push(...this.getFavorites)
                     this.currentSlideData = arrayCities[index]
 
-                    this.changeHeaderName(this.currentSlideData.infos.name)
+                    this.$store.commit('changeCurrentSlideData', this.currentSlideData)
 
-                    this.$bus.$emit('showCurveSun', this.currentSlideData.infos.id)
+                    this.changeHeaderName(this.currentSlideData.infos.name)
                 })
             },
             async getLocation () {

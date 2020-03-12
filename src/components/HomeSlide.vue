@@ -2,9 +2,9 @@
     <ion-slide v-bind:key="city.infos.id">
         <div class="slideContainer ion-padding-bottom">
             <div class="currentInfosContainer">
-                <ion-grid color="transparent">
+                <ion-grid color="transparent" id="topContent">
                     <ion-row class="ion-margin-bottom ion-justify-content-between">
-                        <ion-text color="light" class="ion-text-start">
+                        <ion-text color="light" class="ion-text-start" style="margin-left:5px">
                             <h4 class="refCityName">{{city.infos.name}}</h4>
                             <h6 class="currentDate">{{this.currentWeatherData ? this.$moment((this.currentWeatherData.infos.dt + this.getTimezone)*1000).format("LLLL") : '--'}}</h6>
                         </ion-text>
@@ -22,47 +22,51 @@
                         </ion-buttons>
                     </ion-row>
 
-                    <ion-row>
-                        <ion-col class="weatherIconContainer">
-                            <ion-text color="light" class="ion-padding-top ion-padding-bottom">
+                    <ion-row class="blueTransparent" id="weatherInfosRow">
+                        <ion-col class="flexColCenter">
+                            <ion-text color="light" class="ion-padding-start ion-padding-top ion-padding-bottom">
                                 <i class="currentWeatherIcon wi"
                                    :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
                             </ion-text>
                         </ion-col>
-                        <ion-col style="flex-grow: 2;">
-                            <ion-text color="light ion-text-start">
-                                <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1) : '--'}} °C</p>
-                                <h4 class="weatherDescription">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description.toUpperCase() : '--'}}</h4>
-                            </ion-text>
-                        </ion-col>
-                        <ion-col size="2" class="degreeContainer">
-                            <div>
-                                <ion-text>
-                                    <h6 class="ion-no-margin grayText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_min, 1) : '--'}}°</h6>
-                                </ion-text>
-                                <ion-text>
-                                    <h6 class="ion-no-margin orangeText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_max, 1) : '--'}}°</h6>
-                                </ion-text>
-                            </div>
-                            <ion-text color="light">
-                                <h6 class="ion-no-margin">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.feels_like, 1) : '--'}}°</h6>
-                            </ion-text>
+                        <ion-col style="flex-grow: 2">
+                            <ion-row>
+                                <ion-col style="flex-grow: 2;">
+                                    <ion-text color="light ion-text-start">
+                                        <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1) : '--'}} °C</p>
+                                        <h4 class="weatherDescription">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description.toUpperCase() : '--'}}</h4>
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="3" class="flexColBetween">
+                                    <div>
+                                        <ion-text>
+                                            <h6 class="ion-no-margin grayText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_min, 1) : '--'}}°</h6>
+                                        </ion-text>
+                                        <ion-text>
+                                            <h6 class="ion-no-margin orangeText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_max, 1) : '--'}}°</h6>
+                                        </ion-text>
+                                    </div>
+                                    <ion-text color="light">
+                                        <h6 class="ion-no-margin">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.feels_like, 1) : '--'}}°</h6>
+                                    </ion-text>
+                                </ion-col>
+                            </ion-row>
                         </ion-col>
                     </ion-row>
 
                     <ion-row class="ion-justify-content-around ion-no-padding">
 
-                        <ion-col class="nightDayParabolContainer degreeContainer">
+                        <ion-col class="nightDayParabolContainer">
                             <NightDayCurve v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></NightDayCurve>
                         </ion-col>
 
-                        <ion-col class="degreeContainer ion-justify-content-end">
+                        <ion-col class="flexColCenter">
                             <ion-row class="ion-justify-content-start ion-align-items-center">
                                 <ion-text color="light">
                                     <i class="iconSize3 wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
                                 </ion-text>
                                 <ion-text color="light">
-                                    <p class="ion-no-margin degree">{{this.currentWeatherData ?
+                                    <p class="ion-no-margin degree" style="margin-bottom: 5px;">{{this.currentWeatherData ?
                                         this.currentWeatherData.infos.wind.deg : '--'}}
                                         <span class="degreeSymbol">°</span>
                                     </p>
@@ -76,8 +80,8 @@
                             </ion-text>
                         </ion-col>
 
-                        <ion-col class="degreeContainer ion-justify-content-end">
-                            <ion-row class="ion-align-items-center">
+                        <ion-col class="flexColCenter">
+                            <ion-row class="ion-align-items-center" style="margin-top: 2px">
                                 <ion-text color="light">
                                     <i class="iconSize2 wi wi-raindrops"></i>
                                 </ion-text>
@@ -232,6 +236,9 @@
 
 <style scoped lang="scss">
     .nightDayParabolContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
         flex-grow: 2;
     }
     #slidesPagesFav {
@@ -258,7 +265,7 @@
         margin-right: 5px;
     }
     .iconSize3 {
-        font-size: 30px;
+        font-size: 27px;
         margin-right: 5px;
     }
     .degreeSymbol {
@@ -301,8 +308,8 @@
         justify-content: space-between;
     }
     .currentInfosContainer {
-        /*flex-grow: 2;*/
-        flex-shrink: 0;
+        flex-grow: 2;
+        /*flex-shrink: 0;*/
     }
     .forecastInfosContainer {
         /*flex-shrink: 0;*/
@@ -314,12 +321,17 @@
         color: grey;
         margin: 0;
     }
-    .degreeContainer {
+    .flexColStart {
         display: flex;
         flex-direction: column;
         justify-content: start;
     }
-    .weatherIconContainer {
+    .flexColBetween {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .flexColCenter {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -329,5 +341,15 @@
         font-size: 14px;
         font-weight: bold;
         color: #a9a9a9;
+    }
+    #topContent {
+        height: 100%;
+        justify-content: space-between;
+        display: flex;
+        flex-direction: column;
+    }
+    #weatherInfosRow {
+        flex-grow: 2;
+        align-items: center;
     }
 </style>
