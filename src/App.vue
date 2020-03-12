@@ -12,7 +12,7 @@
     import TheMenu from '@/components/TheMenu.vue'
 
     export default {
-        name: 'modal',
+        name: 'App',
         components: {
             TheMenu
         },

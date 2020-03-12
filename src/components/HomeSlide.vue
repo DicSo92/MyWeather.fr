@@ -22,90 +22,16 @@
                         </ion-buttons>
                     </ion-row>
 
-                    <ion-row class="blueTransparent" id="weatherInfosRow">
-                        <ion-col class="flexColCenter">
-                            <ion-text color="light" class="ion-padding-start ion-padding-top ion-padding-bottom">
-                                <i class="currentWeatherIcon wi"
-                                   :class="this.currentWeatherData ? 'wi-owm-day-' + this.currentWeatherData.infos.weather[0].id : ''"></i>
-                            </ion-text>
-                        </ion-col>
-                        <ion-col style="flex-grow: 2">
-                            <ion-row>
-                                <ion-col style="flex-grow: 2;">
-                                    <ion-text color="light ion-text-start">
-                                        <p class="weatherDegree">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp, 1) : '--'}} °C</p>
-                                        <h4 class="weatherDescription">{{this.currentWeatherData ? this.currentWeatherData.infos.weather[0].description.toUpperCase() : '--'}}</h4>
-                                    </ion-text>
-                                </ion-col>
-                                <ion-col size="3" class="flexColBetween">
-                                    <div>
-                                        <ion-text>
-                                            <h6 class="ion-no-margin grayText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_min, 1) : '--'}}°</h6>
-                                        </ion-text>
-                                        <ion-text>
-                                            <h6 class="ion-no-margin orangeText">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.temp_max, 1) : '--'}}°</h6>
-                                        </ion-text>
-                                    </div>
-                                    <ion-text color="light">
-                                        <h6 class="ion-no-margin">{{this.currentWeatherData ? _.round(this.currentWeatherData.infos.main.feels_like, 1) : '--'}}°</h6>
-                                    </ion-text>
-                                </ion-col>
-                            </ion-row>
-                        </ion-col>
-                    </ion-row>
 
-                    <ion-row class="ion-justify-content-around ion-no-padding">
+                    <DailyWeather v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></DailyWeather>
 
-                        <ion-col class="nightDayParabolContainer">
-                            <NightDayCurve v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></NightDayCurve>
-                        </ion-col>
+                    <DailyWeatherPlus v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></DailyWeatherPlus>
 
-                        <ion-col class="flexColCenter">
-                            <ion-row class="ion-justify-content-start ion-align-items-center">
-                                <ion-text color="light">
-                                    <i class="iconSize3 wi wi-wind" :class="this.currentWeatherData ? 'from-'  + this.currentWeatherData.infos.wind.deg + '-deg' : ''"></i>
-                                </ion-text>
-                                <ion-text color="light">
-                                    <p class="ion-no-margin degree" style="margin-bottom: 5px;">{{this.currentWeatherData ?
-                                        this.currentWeatherData.infos.wind.deg : '--'}}
-                                        <span class="degreeSymbol">°</span>
-                                    </p>
-                                </ion-text>
-                            </ion-row>
-                            <ion-text color="light" class="ion-text-start">
-                                <p class="ion-no-margin degree">
-                                    {{this.currentWeatherData ? _.round(this.currentWeatherData.infos.wind.speed*3.6, 1) : '-'}}
-                                    <span class="kmh"> km/h</span>
-                                </p>
-                            </ion-text>
-                        </ion-col>
-
-                        <ion-col class="flexColCenter">
-                            <ion-row class="ion-align-items-center" style="margin-top: 2px">
-                                <ion-text color="light">
-                                    <i class="iconSize2 wi wi-raindrops"></i>
-                                </ion-text>
-                                <ion-text color="light">
-                                    <p class="degree" style="margin: 0;">{{this.currentWeatherData ? this.currentWeatherData.infos.main.humidity : '-'}}%</p>
-                                </ion-text>
-                            </ion-row>
-                            <ion-row class="ion-align-items-center">
-                                <ion-text color="light">
-                                    <i class="iconSize1 wi wi-barometer"></i>
-                                </ion-text>
-                                <ion-text color="light">
-                                    <p class="degree" style="margin: 0;">{{this.currentWeatherData ? this.currentWeatherData.infos.main.pressure : '-'}}hPa</p>
-                                </ion-text>
-                            </ion-row>
-                        </ion-col>
-
-                    </ion-row>
                 </ion-grid>
             </div>
 
-            <div class="forecastInfosContainer" ref="forecastInfosContainer">
-                <!--                <ion-text color="light" class="ion-text-start">Short term Forecast</ion-text>-->
-                <div class="blueTransparent forecastInfos">
+            <div ref="forecastInfosContainer">
+                <div class="blueTransparent">
                     <ion-grid>
                         <ion-row>
                             <ion-text color="light">
@@ -129,14 +55,16 @@
     import axios from 'axios'
     import SlideShortForecast from '@/components/SlideShortForecast.vue'
     import ListDailyForecast from '@/components/ListDailyForecast.vue'
-    import NightDayCurve from '@/components/NightDayCurve.vue'
+    import DailyWeather from '@/components/DailyWeather.vue'
+    import DailyWeatherPlus from '@/components/DailyWeatherPlus.vue'
 
     export default {
         name: 'Home',
         components: {
             SlideShortForecast,
             ListDailyForecast,
-            NightDayCurve
+            DailyWeather,
+            DailyWeatherPlus,
         },
         props: {
             city: Object,
@@ -235,59 +163,15 @@
 </script>
 
 <style scoped lang="scss">
-    .nightDayParabolContainer {
+    #topContent {
+        height: 100%;
+        justify-content: space-between;
         display: flex;
         flex-direction: column;
-        justify-content: start;
-        flex-grow: 2;
-    }
-    #slidesPagesFav {
-        height: 100%;
-        color: white;
     }
     .refCityName {
         margin-top: 0;
         font-size: 20px;
-    }
-    .currentWeatherIcon {
-        font-size: 55px;
-    }
-    .weatherDegree {
-        font-size: 40px;
-        margin: 0;
-    }
-    .iconSize1 {
-        font-size: 17px;
-        margin-right: 5px;
-    }
-    .iconSize2 {
-        font-size: 24px;
-        margin-right: 5px;
-    }
-    .iconSize3 {
-        font-size: 27px;
-        margin-right: 5px;
-    }
-    .degreeSymbol {
-        font-size: 15px;
-        color: gray;
-    }
-    .kmh {
-        color: gray;
-        font-size: 12px;
-    }
-    .degree {
-        font-size: 12px;
-    }
-    .toolbar {
-        border-bottom: 1px gray solid;
-        color: white;
-    }
-    .swiper-slide {
-        display: block;
-    }
-    .forecastHeader {
-        border-bottom: 1px solid #ffffff60;
     }
     .weekDay {
         margin: 6px 6px 0;
@@ -309,47 +193,10 @@
     }
     .currentInfosContainer {
         flex-grow: 2;
-        /*flex-shrink: 0;*/
-    }
-    .forecastInfosContainer {
-        /*flex-shrink: 0;*/
-    }
-    .forecastInfos {
     }
     .currentDate {
         font-size: 14px;
         color: grey;
         margin: 0;
-    }
-    .flexColStart {
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-    }
-    .flexColBetween {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .flexColCenter {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .weatherDescription {
-        margin: 0;
-        font-size: 14px;
-        font-weight: bold;
-        color: #a9a9a9;
-    }
-    #topContent {
-        height: 100%;
-        justify-content: space-between;
-        display: flex;
-        flex-direction: column;
-    }
-    #weatherInfosRow {
-        flex-grow: 2;
-        align-items: center;
     }
 </style>
