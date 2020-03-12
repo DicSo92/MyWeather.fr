@@ -155,6 +155,8 @@
                     this.currentSlideData = arrayCities[index]
 
                     this.changeHeaderName(this.currentSlideData.infos.name)
+
+                    this.$bus.$emit('showCurveSun', this.currentSlideData.infos.id)
                 })
             },
             async getLocation () {

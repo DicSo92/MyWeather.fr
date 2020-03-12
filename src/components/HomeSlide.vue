@@ -144,13 +144,6 @@
             }
         },
         mounted() {
-            this.$bus.$on('getClientHeight', () => {
-                let boundingClientHeight = this.$refs.forecastInfosContainer.getBoundingClientRect()
-                console.log('eeeeeeee')
-                // console.log(clientHeight)
-                console.log(boundingClientHeight)
-            })
-
             this.getCurrentWeatherData()
             this.getWeatherForecastData()
         },
