@@ -7,6 +7,11 @@ ion-toolbar {
 .sc-ion-modal-ios-h {
   --background: #03030590
 }
+#theModalList {
+  .inner-scroll {
+    padding-left: 0;
+  }
+}
 
 $colors: (
         //primary:    #f9961e,

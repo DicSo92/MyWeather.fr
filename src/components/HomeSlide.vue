@@ -1,8 +1,10 @@
 <template>
     <ion-slide v-bind:key="city.infos.id">
         <div class="slideContainer ion-padding-bottom">
+
             <div class="currentInfosContainer">
                 <ion-grid color="transparent" id="topContent">
+
                     <ion-row class="ion-margin-bottom ion-justify-content-between">
                         <ion-text color="light" class="ion-text-start" style="margin-left:5px">
                             <h4 class="refCityName">{{city.infos.name}}</h4>
@@ -21,15 +23,11 @@
                             </ion-button>
                         </ion-buttons>
                     </ion-row>
-
-
                     <DailyWeather v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></DailyWeather>
-
                     <DailyWeatherPlus v-if="this.currentWeatherData" :weatherData="this.currentWeatherData"></DailyWeatherPlus>
 
                 </ion-grid>
             </div>
-
             <div ref="forecastInfosContainer">
                 <div class="blueTransparent">
                     <ion-grid>
@@ -105,7 +103,7 @@
                 if (this.getCurrentSearch && city.infos.id === this.getCurrentSearch.id) {
                     this.$store.commit('changeCurrentSearch', null)
                 }
-                this.$store.commit('addFavorite', {infos: city.infos, forecast: this.forecastData})
+                this.$store.commit('addFavorite', {infos: this.currentWeatherData.infos, forecast: this.forecastData})
                 if (this.getCurrentLocation && this.getCurrentLocation.id !== city.infos.id) {
                     this.$bus.$emit('slideTo', 1)
                 }

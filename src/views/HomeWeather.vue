@@ -14,6 +14,9 @@
                     </ion-button>
                 </ion-buttons>
                 <ion-buttons slot="primary">
+                    <ion-button @click="openList">
+                        <ion-icon slot="icon-only" name="list" color="light"></ion-icon>
+                    </ion-button>
                     <ion-button @click="openSearch">
                         <ion-icon slot="icon-only" name="search" color="light"></ion-icon>
                     </ion-button>
@@ -52,6 +55,7 @@
 
 <script>
     import TheModalSearch from '@/components/TheModalSearch.vue'
+    import TheModalList from '@/components/TheModalList.vue'
     import HomeSlide from '@/components/HomeSlide.vue'
     import TheNoDataPage from '@/components/TheNoDataPage.vue'
     import axios from 'axios'
@@ -139,6 +143,15 @@
                 return this.$ionic.modalController
                     .create({
                         component: TheModalSearch,
+                    }).then(m => {
+                        m.present()
+                    })
+            },
+            openList() {
+                return this.$ionic.modalController
+                    .create({
+                        component: TheModalList,
+                        cssClass: "my-modal-list"
                     }).then(m => {
                         m.present()
                     })
