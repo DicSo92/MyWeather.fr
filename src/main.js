@@ -22,6 +22,7 @@ Vue.use(require('vue-moment'), {
 
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
+import i18n from './i18n'
 
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
@@ -34,5 +35,6 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
