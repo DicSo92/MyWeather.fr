@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Home from '../views/Home.vue'
 import HomeWeather from '../views/HomeWeather.vue'
 
 import { IonicVueRouter } from '@ionic/vue';
@@ -20,11 +19,5 @@ export default new IonicVueRouter({
       name: 'home',
       component: HomeWeather
     },
-    {
-      path: '/about',
-      name: 'about',
-      component: () =>
-          import(/* webpackChunkName: "about" */ '@/views/About.vue')
-    }
   ]
 });
