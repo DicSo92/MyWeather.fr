@@ -130,7 +130,7 @@
 
                 if (this.city.forecast) {
                     console.log(this.city.infos.name + ' == getForecast test 2')
-                    if (this.city.forecast.list[0].dt < (Date.now() / 1000 + 12000)) { // Si forecast trop ancien
+                    if (this.city.forecast.list[0].dt < (Date.now() / 1000)) { // Si forecast trop ancien
                         console.log(this.city.infos.name + ' == getForecast test 3')
                         let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                         axios.get(forecastUrl)

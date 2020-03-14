@@ -15,12 +15,15 @@
         </ion-header>
         <ion-content class="ion-padding" fullscreen>
             <ion-reorder-group @ionItemReorder="doReorder($event)" disabled="false" class="groupList" ref="reorderGroup">
-                <!-- Default reorder icon, end aligned items -->
+
                 <ion-item v-for="(favorite, index) in this.favorites"
                           color="transparent" class="favoriteItem"
                           @click="openFavorite(index)">
                     <ion-text color="light">
-                        <h6 class="favoriteTime">04:16</h6>
+                        <h6 class="favoriteTime">
+<!--                            {{(favorite.infos.dt + (favorite.infos.timezone - 3600))*1000 | moment("LT")}}-->
+                            {{(favorite.infos.dt + (favorite.infos.timezone - 3600))*1000 | moment("LT")}}
+                        </h6>
                         <h1 class="favoriteName">{{favorite.infos.name}}</h1>
                     </ion-text>
                     <ion-text slot="end" color="light" class="ion-padding-vertical">
@@ -31,14 +34,8 @@
                         <ion-icon name="swap" size="large" class="reorderIcon"></ion-icon>
                     </ion-reorder>
                 </ion-item>
+
             </ion-reorder-group>
-
-
-            <ion-list class="ion-margin-top">
-                <ion-item v-for="(fav, index) in this.favorites">
-                    <ion-label>{{fav.infos.name}}</ion-label>
-                </ion-item>
-            </ion-list>
         </ion-content>
     </div>
 </template>
