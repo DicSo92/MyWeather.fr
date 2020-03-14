@@ -114,7 +114,7 @@
                 this.$store.commit('removeFavorite', city.infos.id)
             },
             getCurrentWeatherData() {
-                let nowUrl = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
 
                 axios.get(nowUrl)
                     .then(response => {
@@ -126,13 +126,13 @@
                     });
             },
             getWeatherForecastData() {
-                console.log(this.city.infos.name + ' == getForecast test 1')
+                // console.log(this.city.infos.name + ' == getForecast test 1')
 
                 if (this.city.forecast) {
-                    console.log(this.city.infos.name + ' == getForecast test 2')
+                    // console.log(this.city.infos.name + ' == getForecast test 2')
                     if (this.city.forecast.list[0].dt < (Date.now() / 1000)) { // Si forecast trop ancien
-                        console.log(this.city.infos.name + ' == getForecast test 3')
-                        let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                        // console.log(this.city.infos.name + ' == getForecast test 3')
+                        let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                         axios.get(forecastUrl)
                             .then(response => {
                                 this.forecastData = response.data
@@ -141,12 +141,12 @@
                                 console.log(error)
                             })
                     } else {
-                        console.log(this.city.infos.name + ' == getForecast test 4')
+                        // console.log(this.city.infos.name + ' == getForecast test 4')
                         this.forecastData = this.city.forecast
                     }
                 } else {
-                    console.log(this.city.infos.name + ' == getForecast test 5')
-                    let forecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                    // console.log(this.city.infos.name + ' == getForecast test 5')
+                    let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                     axios.get(forecastUrl)
                         .then(response => {
                             this.forecastData = response.data
