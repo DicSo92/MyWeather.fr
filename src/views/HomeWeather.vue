@@ -10,7 +10,7 @@
                         <ion-icon slot="icon-only" name="navigate" color="light"></ion-icon>
                     </ion-button>
                     <ion-button @click="changeLang" class="ion-text-center">
-                        <ion-icon slot="icon-only" name="flask" color="light"></ion-icon>
+                        <img class="translateIcon" src="@/assets/translateIcon.png"/>
                     </ion-button>
                 </ion-buttons>
                 <ion-buttons slot="primary">
@@ -236,7 +236,10 @@
         --bullet-background: white;
         --bullet-background-active: white;
     }
-
+    .translateIcon {
+        width: 25px;
+        height: auto;
+    }
     .toolbar {
         border-bottom: 1px gray solid;
         color: white;
