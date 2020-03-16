@@ -110,9 +110,7 @@
                     this.$store.commit('changeCurrentSearch', null)
                 }
                 this.$store.commit('addFavorite', {infos: this.currentWeatherData.infos, forecast: this.forecastData})
-                if (this.getCurrentLocation && this.getCurrentLocation.id !== city.infos.id) {
-                    this.$bus.$emit('slideTo', 1)
-                }
+                this.$bus.$emit('changeCurrentIndex', 0)
             },
             removeFromFavorites(city) {
                 this.$bus.$emit('changeCurrentIndex', 0)
@@ -133,7 +131,6 @@
             },
             getWeatherForecastData() {
                 // console.log(this.city.infos.name + ' == getForecast test 1')
-
                 if (this.city.forecast) {
                     // console.log(this.city.infos.name + ' == getForecast test 2')
                     if (this.city.forecast.list[0].dt < (Date.now() / 1000)) { // Si forecast trop ancien
