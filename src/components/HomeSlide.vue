@@ -7,7 +7,10 @@
 
                     <ion-row class="ion-margin-bottom ion-justify-content-between">
                         <ion-text color="light" class="ion-text-start" style="margin-left:5px">
-                            <h4 class="refCityName">{{city.infos.name}}</h4>
+                            <h4 class="refCityName">
+                                <ion-icon slot="icon-only" name="navigate" color="light" v-if="this.isCurrentLocation"></ion-icon>
+                                {{city.infos.name}}
+                            </h4>
                             <h6 class="currentDate">{{this.currentWeatherData ? this.$moment((this.currentWeatherData.infos.dt + this.getTimezone)*1000).format("LLLL") : '--'}}</h6>
                         </ion-text>
                         <ion-buttons>
@@ -94,6 +97,9 @@
             isCurrentSearch() {
                 return this.getCurrentSearch.infos.id === this.city.infos.id
             },
+            isCurrentLocation() {
+                return this.getCurrentLocation.infos.id === this.city.infos.id
+            },
             getTimezone () {
                 return this.currentWeatherData.infos.timezone-3600
             }
@@ -168,6 +174,8 @@
         flex-direction: column;
     }
     .refCityName {
+        display: flex;
+        align-items: center;
         margin-top: 0;
         font-size: 20px;
     }

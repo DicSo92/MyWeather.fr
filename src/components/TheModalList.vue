@@ -2,7 +2,7 @@
     <div id="theModalList" css-class="my-modal-list">
         <ion-header translucent>
             <ion-toolbar>
-                <ion-buttons slot="start">
+                <ion-buttons slot="start" v-if="this.favorites.length > 0">
                     <ion-button @click="toggleReorder" color="light">Toggle</ion-button>
                 </ion-buttons>
                 <ion-title color="light">Favorites List</ion-title>
@@ -14,8 +14,32 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding" fullscreen>
-            <ion-reorder-group @ionItemReorder="doReorder($event)" disabled="false" class="groupList" ref="reorderGroup">
 
+            <ion-item v-if="this.getCurrentLocation"
+                      color="transparent" class="favoriteItem"
+                      @click="openCurrentLocation">
+                <ion-text color="light">
+                    <h6 class="favoriteTime">
+                        <ion-icon slot="icon-only" name="navigate" color="light"></ion-icon>
+                        <!--                            {{(favorite.infos.dt + (favorite.infos.timezone - 3600))*1000 | moment("LT")}}-->
+                        {{(this.getCurrentLocation.infos.dt + (this.getCurrentLocation.infos.timezone - 3600))*1000 | moment("LT")}}
+                    </h6>
+                    <h1 class="favoriteName">{{this.getCurrentLocation.infos.name}}</h1>
+                </ion-text>
+                <ion-text slot="end" color="light" class="ion-padding-vertical">
+                    <i class="weatherIcon wi"
+                       :class="'wi-owm-day-' + this.getCurrentLocation.infos.weather[0].id"></i>
+                </ion-text>
+                <ion-reorder slot="end">
+                    <ion-icon name="swap" size="large" class="reorderIcon"></ion-icon>
+                </ion-reorder>
+            </ion-item>
+
+            <div v-if="this.getCurrentLocation" class="delimiter ion-margin-vertical"></div>
+
+            <ion-reorder-group @ionItemReorder="doReorder($event)" disabled="false"
+                               class="groupList" ref="reorderGroup"
+                               v-if="this.favorites.length > 0">
                 <ion-item v-for="(favorite, index) in this.favorites"
                           color="transparent" class="favoriteItem"
                           @click="openFavorite(index)">
@@ -34,8 +58,15 @@
                         <ion-icon name="swap" size="large" class="reorderIcon"></ion-icon>
                     </ion-reorder>
                 </ion-item>
-
             </ion-reorder-group>
+
+            <ion-item color="transparent" class="favoriteItem" v-else>
+                <ion-text color="light">
+                    <h5 class="ion-margin-vertical">You still don't have any favorites</h5>
+                </ion-text>
+                <ion-icon slot="end" name="add" size="large" color="light" @click="addFavorites()"></ion-icon>
+            </ion-item>
+
         </ion-content>
     </div>
 </template>
@@ -74,22 +105,30 @@
                 let favoriteIndex = index
                 if (this.getCurrentSearch)  favoriteIndex += 1
                 if (this.getCurrentLocation) favoriteIndex += 1
-
                 this.$ionic.modalController.dismiss()
                 this.$bus.$emit('slideTo', favoriteIndex)
+            },
+            openCurrentLocation () {
+                let currentLocationIndex = 0
+                if (this.getCurrentSearch)  currentLocationIndex += 1
+                this.$ionic.modalController.dismiss()
+                this.$bus.$emit('slideTo', currentLocationIndex)
             },
             dismissModal() {
                 this.$ionic.modalController.dismiss()
             },
             doReorder(event) {
                 console.log('Dragged from index', event.detail.from, 'to', event.detail.to);
-
                 this.favorites = event.detail.complete(this.favorites);
                 // event.detail.complete();
             },
             toggleReorder() {
                 const reorderGroup = this.$refs.reorderGroup
                 reorderGroup.disabled = !reorderGroup.disabled;
+            },
+            addFavorites () {
+                this.dismissModal()
+                this.$bus.$emit('openSearch')
             }
         }
     }
@@ -99,9 +138,16 @@
     .favoriteItem {
         border-bottom: 1px solid dimgray;
         border-top: 1px solid dimgray;
+        margin-left: -16px;
+        margin-right: -16px;
 
         .favoriteTime {
+            display: flex;
+            align-items: center;
             color: grey;
+            ion-icon {
+                font-size: 20px;
+            }
         }
         .favoriteName {
             margin-top: 0;
@@ -115,11 +161,12 @@
             transform: rotate(90deg);
         }
     }
-    .groupList {
-        ion-item {
-            margin-left: -16px;
-            margin-right: -16px;
-        }
+    .delimiter {
+        background-color: grey;
+        opacity: 0.2;
+        height: 1px;
+        margin-left: -16px;
+        margin-right: -16px;
     }
     #theModalList {
         --background: transparent;

@@ -191,14 +191,11 @@
                 let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
                 let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
 
-                console.log(nowUrl)
                 axios.get(nowUrl)
                     .then(currentWeather => {
-                        console.log('get currentLocation currentWeather')
                         this.changeHeaderName(currentWeather.data.name) // Change Header Name
                         axios.get(forecastUrl)
                             .then(forecast => {
-                                console.log('get currentLocation forecast')
                                 this.currentLocation = {infos: currentWeather.data, forecast: forecast.data}
                                 this.$store.commit('changeCurrentLocation', {infos: currentWeather.data, forecast: forecast.data})
                             })
