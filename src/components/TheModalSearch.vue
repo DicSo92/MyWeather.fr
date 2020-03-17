@@ -35,6 +35,8 @@
     import ModalSearchItem from '@/components/ModalSearchItem.vue'
     import CountryFlag from 'vue-country-flag'
     import store from '../store';
+    import axios from 'axios'
+
 
 
     export default {
@@ -79,7 +81,7 @@
                 if (this.search.length > 0 ) {
                     this.searchCities = store.state.cities.filter(city => {
                         return city.name.toLowerCase().includes(this.search.toLowerCase())
-                    }).slice(0, 20)
+                    }).slice(0, 5)
                 } else {
                     this.searchCities = []
                 }
