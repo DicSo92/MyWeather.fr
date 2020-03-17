@@ -8,7 +8,7 @@
         <ion-content scroll-y="false">
             <div id="containerMenuList">
                 <ion-list class="menuList">
-                    <ion-item color="transparent" class="ion-margin-top">
+                    <ion-item color="transparent" class="ion-margin-top" @click="closeMenu">
                         <ion-icon name="apps" color="light" slot="start"></ion-icon>
                         <ion-label color="light">{{ $t('home') }}</ion-label>
                     </ion-item>
@@ -105,8 +105,10 @@
             }
         },
         methods: {
-            openLegalMentions() {
+            closeMenu () {
                 this.$refs.menu.close()
+            },
+            openLegalMentions() {
                 return this.$ionic.modalController
                     .create({
                         component: TheModalLegalMentions,
@@ -115,7 +117,6 @@
                     })
             },
             openGTC () {
-                this.$refs.menu.close()
                 return this.$ionic.modalController
                     .create({
                         component: TheModalGTC,
@@ -124,7 +125,6 @@
                     })
             },
             openAbout () {
-                this.$refs.menu.close()
                 return this.$ionic.modalController
                     .create({
                         component: TheModalAbout,
@@ -133,11 +133,11 @@
                     })
             },
             openList () {
-                this.$refs.menu.close()
+                this.closeMenu()
                 this.$bus.$emit('openList')
             },
             openSearch () {
-                this.$refs.menu.close()
+                this.closeMenu()
                 this.$bus.$emit('openSearch')
             }
         }
