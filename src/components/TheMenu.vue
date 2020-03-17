@@ -34,6 +34,7 @@
                 </ion-list>
                 <ion-text color="light">
                     <h5>{{this.lang}}</h5>
+                    <p>{{ $t('message') }}</p>
                 </ion-text>
                 <ion-list class="menuList">
                     <ion-item color="transparent" @click="openAbout">
@@ -98,6 +99,7 @@
         watch: {
             lang (val) {
                 this.$store.commit('changeLang', val)
+                this.$root.$i18n.locale = val
             }
         },
         computed: {

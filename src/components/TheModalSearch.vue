@@ -21,12 +21,10 @@
                 <ion-spinner color="light"></ion-spinner>
             </div>
             <ion-list id="searchList">
-
                 <ModalSearchItem v-for="(city, index) in searchCities"
                           v-bind:key="city.id"
                           :city="city">
                 </ModalSearchItem>
-
             </ion-list>
         </ion-content>
     </div>
