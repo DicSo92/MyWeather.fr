@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import CitiesJson from '@/ressources/city.list.min.json'
+    // import CitiesJson from '@/ressources/city.list.min.json'
     import TheMenu from '@/components/TheMenu.vue'
 
     export default {
@@ -20,7 +20,7 @@
             return {}
         },
         created() {
-            this.storeVueX('changeCities', JSON.parse(JSON.stringify(CitiesJson)))
+            // this.storeVueX('changeCities', JSON.parse(JSON.stringify(CitiesJson)))
         },
         mounted() {
             if (localStorage.getItem('favorites')) this.storeVueX('changeFavorites', JSON.parse(localStorage.getItem('favorites')))

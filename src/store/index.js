@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        cities: null,
+        // cities: null,
         currentSearch: null,
         currentLocation: null,
         currentSlideData: null,
@@ -17,9 +17,9 @@ export default new Vuex.Store({
         changeLang(state, val) {
             state.lang = val
         },
-        changeCities(state, val) {
-            state.cities = val
-        },
+        // changeCities(state, val) {
+        //     state.cities = val
+        // },
         changeCurrentSearch(state, val) {
             state.currentSearch = val
         },

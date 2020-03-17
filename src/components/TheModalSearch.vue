@@ -22,7 +22,7 @@
                 <ion-spinner color="light"></ion-spinner>
             </div>
             <ion-list id="searchList">
-                <ModalSearchItem v-for="(city, index) in searchCities"
+                <ModalSearchItem v-for="(city, index) in searchCitieRests"
                           v-bind:key="city.id"
                           :city="city">
                 </ModalSearchItem>
@@ -48,12 +48,14 @@
         data() {
             return {
                 search: '',
-                searchCities: [],
+                // searchCities: [],
+                searchCitieRests: [],
                 loading: false
             }
         },
         created() {
-            this.debouncedGetSearch = _.debounce(this.getSearch, 500)
+            // this.debouncedGetSearch = _.debounce(this.getSearch, 600)
+            this.debouncedGetSearch = _.debounce(this.getSearchRest, 600)
         },
         mounted() {
             this.$bus.$on('dismissTheModal', () => {
@@ -77,19 +79,42 @@
             },
         },
         methods: {
-            getSearch () {
-                if (this.search.length > 0 ) {
-                    this.searchCities = store.state.cities.filter(city => {
-                        return city.name.toLowerCase().includes(this.search.toLowerCase())
-                    }).slice(0, 5)
-                } else {
-                    this.searchCities = []
-                }
-                this.loading = false
-            },
             dismissModal() {
                 this.$ionic.modalController.dismiss()
             },
+
+            // getSearch () {
+            //     if (this.search.length > 0 ) {
+            //         this.searchCities = store.state.cities.filter(city => {
+            //             return city.name.toLowerCase().includes(this.search.toLowerCase())
+            //         }).slice(0, 5)
+            //     } else {
+            //         this.searchCities = []
+            //     }
+            //     this.loading = false
+            // },
+
+
+            getSearchRest () {
+                if (this.search.length > 0 ) {
+                    // let nowUrl = `http://localhost/RestApiPhp_Cities/?search=${this.search.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,' ')}`
+                    let nowUrl = `http://cities-api-online.preview-domain.com/?search=${this.search.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,' ')}`
+                    axios.get(nowUrl)
+                        .then(search => {
+                            this.searchCitieRests = search.data.searchDatas
+                            this.loading = false
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.searchCitieRests = []
+                            this.loading = false
+                        });
+                } else {
+                    this.searchCitieRests = []
+                    this.loading = false
+                }
+
+            }
         }
     }
 </script>
