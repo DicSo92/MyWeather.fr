@@ -86,6 +86,12 @@
         },
         mounted() {
             this.favorites = store.state.favorites
+
+            this.$bus.$on('dismissModalList', () => {
+                this.dismissModal()
+            })
+
+            console.log('openModalList test1')
         },
         watch: {
         },
