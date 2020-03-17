@@ -1,5 +1,5 @@
 <template>
-    <ion-item color="transparent">
+    <ion-item color="transparent" class="listDailyForecast">
         <ion-content overflow-scroll="true" color="transparent" class="listDays" v-if="this.forecastDay.length > 0">
             <ion-list id="searchList">
 
@@ -49,7 +49,7 @@
     }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
     .listDays  {
         height: 25vh;
         overflow-y: scroll;
@@ -61,5 +61,8 @@
         .containerItem {
             border-bottom: 1px solid white;
         }
+    }
+    .listDailyForecast {
+        margin-top: -15px;
     }
 </style>

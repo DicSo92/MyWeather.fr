@@ -33,16 +33,7 @@
             </div>
             <div ref="forecastInfosContainer">
                 <div class="blueTransparent">
-                    <ion-grid>
-                        <ion-row>
-                            <ion-text color="light">
-                                <h6 class="weekDay">Mardi <span class="weekDayGrey">TODAY</span></h6>
-                            </ion-text>
-                        </ion-row>
-                        <ion-row v-if="this.forecastData">
-                            <SlideShortForecast :forecast="this.forecastData"></SlideShortForecast>
-                        </ion-row>
-                    </ion-grid>
+                    <SlideShortForecast v-if="this.forecastData" :forecast="this.forecastData"></SlideShortForecast>
 
                     <ListDailyForecast v-if="this.forecastData" :forecast="this.forecastData"></ListDailyForecast>
                 </div>
@@ -178,13 +169,6 @@
         align-items: center;
         margin-top: 0;
         font-size: 20px;
-    }
-    .weekDay {
-        margin: 6px 6px 0;
-    }
-    .weekDayGrey {
-        color: grey;
-        font-size: 12px;
     }
     .blueTransparent {
         background-color: rgba(0, 5, 30, 0.3);
