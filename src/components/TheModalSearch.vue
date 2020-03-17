@@ -98,7 +98,7 @@
             getSearchRest () {
                 if (this.search.length > 0 ) {
                     // let nowUrl = `http://localhost/RestApiPhp_Cities/?search=${this.search.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,' ')}`
-                    let nowUrl = `http://cities-api-online.preview-domain.com/?search=${this.search.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,' ')}`
+                    let nowUrl = `https://cities-api.online/?search=${this.search.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,' ')}`
                     axios.get(nowUrl)
                         .then(search => {
                             this.searchCitieRests = search.data.searchDatas
