@@ -54,12 +54,6 @@
             storeVueX: function (name, data) {
                 this.$store.commit(name, data)
             },
-            forceRerender() {
-                this.renderComponent = false;
-                this.$nextTick(() => {
-                    this.renderComponent = true;
-                })
-            }
         }
     }
 </script>

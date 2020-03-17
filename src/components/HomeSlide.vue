@@ -102,6 +102,9 @@
             },
             getTimezone () {
                 return this.currentWeatherData.infos.timezone-3600
+            },
+            getLang () {
+                return this.$store.state.lang
             }
         },
         methods: {
@@ -118,7 +121,7 @@
                 this.$store.commit('removeFavorite', city.infos.id)
             },
             getCurrentWeatherData() {
-                let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER + '&lang=' + this.getLang
 
                 axios.get(nowUrl)
                     .then(response => {
@@ -135,7 +138,7 @@
                     // console.log(this.city.infos.name + ' == getForecast test 2')
                     if (this.city.forecast.list[0].dt < (Date.now() / 1000)) { // Si forecast trop ancien
                         // console.log(this.city.infos.name + ' == getForecast test 3')
-                        let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                        let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER + '&lang=' + this.getLang
                         axios.get(forecastUrl)
                             .then(response => {
                                 this.forecastData = response.data
@@ -149,7 +152,7 @@
                     }
                 } else {
                     // console.log(this.city.infos.name + ' == getForecast test 5')
-                    let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                    let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?id=' + this.city.infos.id + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER + '&lang=' + this.getLang
                     axios.get(forecastUrl)
                         .then(response => {
                             this.forecastData = response.data

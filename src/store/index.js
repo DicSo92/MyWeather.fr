@@ -10,9 +10,13 @@ export default new Vuex.Store({
         currentLocation: null,
         currentSlideData: null,
         favorites: [],
+        lang: 'en'
     },
     getters: {},
     mutations: {
+        changeLang(state, val) {
+            state.lang = val
+        },
         changeCities(state, val) {
             state.cities = val
         },

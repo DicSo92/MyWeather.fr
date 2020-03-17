@@ -25,12 +25,16 @@
                             <img class="ion-margin-end" src="@/assets/translateIcon.png"/>
                             Language
                         </ion-label>
-                        <ion-select value="English" id="selectLang">
-                            <ion-select-option value="English">English</ion-select-option>
-                            <ion-select-option value="French">French</ion-select-option>
+                        <ion-select :value="this.getLang" @ionChange="lang = $event.target.value"
+                                    id="selectLang" ref="selectLang">
+                            <ion-select-option value="en">English</ion-select-option>
+                            <ion-select-option value="fr">French</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-list>
+                <ion-text color="light">
+                    <h5>{{this.lang}}</h5>
+                </ion-text>
                 <ion-list class="menuList">
                     <ion-item color="transparent" @click="openAbout">
                         <ion-icon name="at" class="greyColor" slot="start"></ion-icon>
@@ -75,17 +79,32 @@
     export default {
         name: 'TheMenu',
         data() {
-            return {}
+            return {
+                lang: 'en'
+            }
         },
         created() {},
         mounted() {
+            this.lang = this.getLang
+
             this.$bus.$on('openMenu', () => {
                 console.log('open menu')
                 this.$refs.menu.open()
             })
+            this.$bus.$on('openChangeLang', () => {
+                this.$refs.selectLang.open()
+            })
         },
-        watch: {},
-        computed: {},
+        watch: {
+            lang (val) {
+                this.$store.commit('changeLang', val)
+            }
+        },
+        computed: {
+            getLang () {
+                return this.$store.state.lang
+            }
+        },
         methods: {
             openLegalMentions() {
                 this.$refs.menu.close()

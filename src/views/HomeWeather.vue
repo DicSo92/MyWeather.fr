@@ -1,5 +1,5 @@
 <template>
-    <div class="ion-page">
+    <div class="ion-page" v-if="this.renderComponent">
         <ion-header>
             <ion-toolbar class="toolbar">
                 <ion-buttons slot="start">
@@ -9,7 +9,7 @@
                     <ion-button @click="locateMe" v-show="!this.currentLocation" class="ion-text-center">
                         <ion-icon slot="icon-only" name="navigate" color="light"></ion-icon>
                     </ion-button>
-                    <ion-button @click="changeLang" class="ion-text-center">
+                    <ion-button @click="openChangeLang" class="ion-text-center">
                         <img class="translateIcon" src="@/assets/translateIcon.png"/>
                     </ion-button>
                 </ion-buttons>
@@ -81,7 +81,9 @@
 
                 currentGeolocation: null,
                 currentLocation: null,
-                currentSearch: null
+                currentSearch: null,
+
+                renderComponent: true
             }
         },
         created() {
@@ -89,6 +91,8 @@
             this.currentSearch = this.getCurrentSearch ? this.getCurrentSearch : null
         },
         mounted() {
+            this.$moment.locale(this.getLang)
+
             this.$bus.$on('openSearch', () => {
                 this.openSearch()
             })
@@ -121,6 +125,10 @@
                 this.$store.commit('changeCurrentSearch', {infos: search, forecast: null})
                 this.changeHeaderName(search.infos.name)
             },
+            getLang (val) {
+                this.$moment.locale(val)
+                this.forceRerender()
+            }
         },
         computed: {
             getCurrentSearch () {
@@ -132,13 +140,16 @@
             getCurrentLocation () {
                 return this.$store.state.currentLocation
             },
+            getLang () {
+                return this.$store.state.lang
+            }
         },
         methods: {
             openMenu () {
                 this.$bus.$emit('openMenu')
             },
-            changeLang () {
-                this.$moment.locale('en')
+            openChangeLang () {
+                this.$bus.$emit('openChangeLang')
             },
             changeHeaderName (text) {
                 this.$refs.headerTitle.innerHTML = text
@@ -192,8 +203,8 @@
                 })
             },
             getCurrentPositionData (pos) {
-                let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
-                let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER
+                let nowUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER + '&lang=' + this.getLang
+                let forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&units=metric&APPID=' + process.env.VUE_APP_OPEN_WEATHER + '&lang=' + this.getLang
 
                 axios.get(nowUrl)
                     .then(currentWeather => {
@@ -228,6 +239,12 @@
                     console.log(e.message);
                 }
             },
+            forceRerender() {
+                this.renderComponent = false;
+                this.$nextTick(() => {
+                    this.renderComponent = true;
+                })
+            }
 
         },
     }
