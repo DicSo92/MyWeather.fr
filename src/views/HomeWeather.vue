@@ -56,7 +56,6 @@
 <script>
     import TheModalSearch from '@/components/TheModalSearch.vue'
     import TheModalList from '@/components/TheModalList.vue'
-    import TheModalLegalMentions from "../components/TheModalLegalMentions";
 
     import HomeSlide from '@/components/HomeSlide.vue'
     import TheNoDataPage from '@/components/TheNoDataPage.vue'
@@ -95,9 +94,6 @@
             })
             this.$bus.$on('openList', () => {
                 this.openList()
-            })
-            this.$bus.$on('openLegalMentions', () => {
-                this.openLegalMentions()
             })
             this.$bus.$on('locateMe', () => {
                 this.locateMe()
@@ -155,16 +151,7 @@
                         m.present()
                     })
             },
-            openLegalMentions() {
-                return this.$ionic.modalController
-                    .create({
-                        component: TheModalLegalMentions,
-                    }).then(m => {
-                        m.present()
-                    })
-            },
             openList() {
-                console.log('openModalList test0')
                 return this.$ionic.modalController
                     .create({
                         component: TheModalList,

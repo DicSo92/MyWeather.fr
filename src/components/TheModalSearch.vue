@@ -85,7 +85,6 @@
             },
             dismissModal() {
                 this.$ionic.modalController.dismiss()
-                this.$bus.$emit('slideTo', 1)
             },
         }
     }

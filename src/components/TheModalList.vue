@@ -90,8 +90,6 @@
             this.$bus.$on('dismissModalList', () => {
                 this.dismissModal()
             })
-
-            console.log('openModalList test1')
         },
         watch: {
         },

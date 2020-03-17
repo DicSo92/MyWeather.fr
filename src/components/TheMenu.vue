@@ -40,7 +40,7 @@
                         <ion-icon name="finger-print" class="greyColor" slot="start"></ion-icon>
                         <ion-label class="greyColor">Legal Mentions</ion-label>
                     </ion-item>
-                    <ion-item color="transparent" id="GTC" class="ion-margin-bottom">
+                    <ion-item color="transparent" id="GTC" class="ion-margin-bottom" @click="openGTC">
                         <ion-icon name="document" class="greyColor" slot="start"></ion-icon>
                         <ion-label class="greyColor">General Terms and Conditions</ion-label>
                     </ion-item>
@@ -68,6 +68,9 @@
 </template>
 
 <script>
+    import TheModalLegalMentions from "../components/TheModalLegalMentions";
+    import TheModalGTC from "../components/TheModalGTC";
+
     export default {
         name: 'TheMenu',
         data() {
@@ -83,9 +86,23 @@
         watch: {},
         computed: {},
         methods: {
-            openLegalMentions () {
+            openLegalMentions() {
                 this.$refs.menu.close()
-                this.$bus.$emit('openLegalMentions')
+                return this.$ionic.modalController
+                    .create({
+                        component: TheModalLegalMentions,
+                    }).then(m => {
+                        m.present()
+                    })
+            },
+            openGTC () {
+                this.$refs.menu.close()
+                return this.$ionic.modalController
+                    .create({
+                        component: TheModalGTC,
+                    }).then(m => {
+                        m.present()
+                    })
             },
             openList () {
                 this.$refs.menu.close()
