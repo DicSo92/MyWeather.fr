@@ -11,6 +11,12 @@ import '@/assets/css/custom-ionic.scss'
 import 'weather-icons-npm/css/weather-icons.css'
 import 'weather-icons-npm/css/weather-icons-wind.css'
 
+import VueGtag from "vue-gtag";
+
+Vue.use(VueGtag, {
+  config: { id: "UA-158903528-2" }
+});
+
 const moment = require('moment')
 require('moment/locale/fr')
 // require('moment/locale/es')
