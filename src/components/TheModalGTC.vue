@@ -1,5 +1,5 @@
 <template>
-    <div id="theModalLegalMentions" css-class="my-modal-list">
+    <div id="theModalGTC" css-class="my-modal-list">
         <ion-header translucent>
             <ion-toolbar class="toolbar">
                 <ion-title ref="headerTitle">General Terms and Conditions</ion-title>
@@ -11,6 +11,9 @@
             </ion-toolbar>
         </ion-header>
         <ion-content fullscreen class="ion-padding">
+            <ion-text color="light">
+                <h3 class="headerText">Conditions Générales d'Utilisation :</h3>
+            </ion-text>
             <ion-text class="fontSmall grey">
                 <p>Le présent document a pour objet de définir les modalités et conditions dans lesquelles d’une part, <span class="light">Charly Luzzi</span>, ci-après
                     dénommé <span class="light">l’EDITEUR</span>, met à la disposition de ses utilisateurs le site, et les services disponibles sur le site et
@@ -18,7 +21,7 @@
                 </p>
                 <p class="bold">Toute connexion au site est subordonnée au respect des présentes conditions.</p>
                 <p>
-                    Pour l’utilisateur, le simple accès au site de l’EDITEUR à l’adresse URL suivante <a class="light" href="https://www.myweather.fr">www.myweather.fr</a> implique l’acceptation
+                    Pour l’utilisateur, le simple accès au site de l’EDITEUR à l’adresse URL suivante <a class="light" href="https://www.myweather.fr" target="_blank">www.myweather.fr</a> implique l’acceptation
                     de l’ensemble des conditions décrites ci-après.
                 </p>
             </ion-text>
@@ -33,15 +36,15 @@
             <ion-text color="light" class="fontSmall">
                 <h6 class="titleText">Liens hypertextes :</h6>
                 <p class="grey m-0">
-                    Le site <a class="light" href="https://www.myweather.fr">www.myweather.fr</a> peut contenir des liens hypertextes vers d’autres sites présents sur le réseau Internet.
-                    Les liens vers ces autres ressources vous font quitter le site <a class="light" href="https://www.myweather.fr">www.myweather.fr</a>
+                    Le site <a class="light" href="https://www.myweather.fr" target="_blank">www.myweather.fr</a> peut contenir des liens hypertextes vers d’autres sites présents sur le réseau Internet.
+                    Les liens vers ces autres ressources vous font quitter le site <a class="light" href="https://www.myweather.fr" target="_blank">www.myweather.fr</a>
                 </p>
                 <p class="grey m-0">
                     Il est possible de créer un lien vers la page de présentation de ce site sans autorisation expresse de
                     l’EDITEUR. Aucune autorisation ou demande d’information préalable ne peut être exigée par l’éditeur à
                     l’égard d’un site qui souhaite établir un lien vers le site de l’éditeur. Il convient toutefois d’afficher
                     ce site dans une nouvelle fenêtre du navigateur. Cependant, l’EDITEUR se réserve le droit de demander la
-                    suppression d’un lien qu’il estime non conforme à l’objet du site <a class="light" href="https://www.myweather.fr">www.myweather.fr</a>
+                    suppression d’un lien qu’il estime non conforme à l’objet du site <a class="light" href="https://www.myweather.fr" target="_blank">www.myweather.fr</a>
                 </p>
             </ion-text>
             <ion-text color="light" class="fontSmall">
@@ -153,7 +156,7 @@
 
 <script>
     export default {
-        name: 'GTC',
+        name: 'TheModalGTC',
         components: {
         },
         data() {

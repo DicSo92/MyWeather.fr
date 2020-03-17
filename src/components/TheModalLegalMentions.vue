@@ -103,7 +103,7 @@
 
 <script>
     export default {
-        name: 'LegalMentions',
+        name: 'TheModalLegalMentions',
         components: {
         },
         data() {

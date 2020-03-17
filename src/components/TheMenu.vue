@@ -32,7 +32,7 @@
                     </ion-item>
                 </ion-list>
                 <ion-list class="menuList">
-                    <ion-item color="transparent">
+                    <ion-item color="transparent" @click="openAbout">
                         <ion-icon name="at" class="greyColor" slot="start"></ion-icon>
                         <ion-label class="greyColor">About</ion-label>
                     </ion-item>
@@ -53,8 +53,8 @@
                     <p>
                         Made with
                         <span>
-                                <ion-icon name="heart" color="danger"></ion-icon>
-                            </span>
+                            <ion-icon name="heart" color="danger"></ion-icon>
+                        </span>
                         by
                         <a href="https://charlyluzzi.com" target="_blank">@CharlyLuzzi</a>
                     </p>
@@ -70,6 +70,7 @@
 <script>
     import TheModalLegalMentions from "../components/TheModalLegalMentions";
     import TheModalGTC from "../components/TheModalGTC";
+    import TheModalAbout from "../components/TheModalAbout";
 
     export default {
         name: 'TheMenu',
@@ -100,6 +101,15 @@
                 return this.$ionic.modalController
                     .create({
                         component: TheModalGTC,
+                    }).then(m => {
+                        m.present()
+                    })
+            },
+            openAbout () {
+                this.$refs.menu.close()
+                return this.$ionic.modalController
+                    .create({
+                        component: TheModalAbout,
                     }).then(m => {
                         m.present()
                     })
