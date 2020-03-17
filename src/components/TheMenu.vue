@@ -10,44 +10,40 @@
                 <ion-list class="menuList">
                     <ion-item color="transparent" class="ion-margin-top">
                         <ion-icon name="apps" color="light" slot="start"></ion-icon>
-                        <ion-label color="light">Home</ion-label>
+                        <ion-label color="light">{{ $t('home') }}</ion-label>
                     </ion-item>
                     <ion-item color="transparent" @click="openList">
                         <ion-icon name="list" color="light" slot="start"></ion-icon>
-                        <ion-label color="light">Favorites</ion-label>
+                        <ion-label color="light">{{ $t('favorites') }}</ion-label>
                     </ion-item>
                     <ion-item color="transparent" @click="openSearch">
                         <ion-icon name="search" color="light" slot="start"></ion-icon>
-                        <ion-label color="light">Search</ion-label>
+                        <ion-label color="light">{{ $t('search') }}</ion-label>
                     </ion-item>
                     <ion-item color="transparent">
                         <ion-label color="light" class="translate">
                             <img class="ion-margin-end" src="@/assets/translateIcon.png"/>
-                            Language
+                            {{ $t('language') }}
                         </ion-label>
                         <ion-select :value="this.getLang" @ionChange="lang = $event.target.value"
                                     id="selectLang" ref="selectLang">
-                            <ion-select-option value="en">English</ion-select-option>
-                            <ion-select-option value="fr">French</ion-select-option>
+                            <ion-select-option value="en">{{ $t('english') }}</ion-select-option>
+                            <ion-select-option value="fr">{{ $t('french') }}</ion-select-option>
                         </ion-select>
                     </ion-item>
                 </ion-list>
-                <ion-text color="light">
-                    <h5>{{this.lang}}</h5>
-                    <p>{{ $t('message') }}</p>
-                </ion-text>
                 <ion-list class="menuList">
                     <ion-item color="transparent" @click="openAbout">
                         <ion-icon name="at" class="greyColor" slot="start"></ion-icon>
-                        <ion-label class="greyColor">About</ion-label>
+                        <ion-label class="greyColor">{{ $t('about') }}</ion-label>
                     </ion-item>
                     <ion-item color="transparent" id="GTC" @click="openLegalMentions">
                         <ion-icon name="finger-print" class="greyColor" slot="start"></ion-icon>
-                        <ion-label class="greyColor">Legal Mentions</ion-label>
+                        <ion-label class="greyColor">{{ $t('legalMentions') }}</ion-label>
                     </ion-item>
                     <ion-item color="transparent" id="GTC" class="ion-margin-bottom" @click="openGTC">
                         <ion-icon name="document" class="greyColor" slot="start"></ion-icon>
-                        <ion-label class="greyColor">General Terms and Conditions</ion-label>
+                        <ion-label class="greyColor">{{ $t('GTC') }}</ion-label>
                     </ion-item>
                 </ion-list>
             </div>
@@ -86,8 +82,6 @@
         },
         created() {},
         mounted() {
-            this.lang = this.getLang
-
             this.$bus.$on('openMenu', () => {
                 console.log('open menu')
                 this.$refs.menu.open()
@@ -100,6 +94,9 @@
             lang (val) {
                 this.$store.commit('changeLang', val)
                 this.$root.$i18n.locale = val
+            },
+            getLang (val) {
+                this.lang = val
             }
         },
         computed: {
@@ -166,7 +163,7 @@
             display: flex;
             align-items: center;
             img {
-                margin-right: 16px;
+                margin-right: 18px;
                 margin-left: 5px;
                 width: 20px;
                 height: auto;

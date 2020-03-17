@@ -1,3 +1,14 @@
 {
-  "message": "hello i18n !!"
+  "message": "hello i18n !!",
+  "home": "Home",
+  "favorites": "Favorites",
+  "search": "Search",
+  "language": "Language",
+  "english": "English",
+  "french": "French",
+  "about": "About",
+  "legalMentions": "Legal Mentions",
+  "GTC": "General Terms and Conditions",
+  "searchHeader": "Search City",
+  "searchPlaceHolder": "Search"
 }

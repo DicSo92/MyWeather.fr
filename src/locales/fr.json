@@ -1,3 +1,14 @@
 {
-  "message": "bonjour i18n !!"
+  "message": "bonjour i18n !!",
+  "home": "Accueil",
+  "favorites": "Favories",
+  "search": "Rechercher",
+  "language": "Langue",
+  "english": "Anglais",
+  "french": "Français",
+  "about": "A Propos",
+  "legalMentions": "Mentions Légales",
+  "GTC": "Conditions Générales d'Utilisation",
+  "searchHeader": "Rechercher une Ville",
+  "searchPlaceHolder": "Recherche"
 }

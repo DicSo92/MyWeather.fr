@@ -2,7 +2,7 @@
     <div id="theModalSearch">
         <ion-header translucent>
             <ion-toolbar>
-                <ion-title color="light">Search City</ion-title>
+                <ion-title color="light">{{ this.$ti18n.t('searchHeader') }}</ion-title>
                 <ion-buttons slot="end">
                     <ion-button @click="dismissModal">
                         <ion-icon slot="icon-only" name="close" color="light"></ion-icon>
@@ -11,6 +11,7 @@
             </ion-toolbar>
             <ion-toolbar>
                 <ion-searchbar animated id="searchBar"
+                               :placeholder="this.$ti18n.t('searchPlaceHolder')"
                                v-bind:value="search"
                                @input="search = $event.target.value">
                 </ion-searchbar>
@@ -34,11 +35,13 @@
     import ModalSearchItem from '@/components/ModalSearchItem.vue'
     import CountryFlag from 'vue-country-flag'
     import store from '../store';
+
+
     export default {
         name: 'TheModalSearch',
         components: {
             CountryFlag,
-            ModalSearchItem
+            ModalSearchItem,
         },
         data() {
             return {
@@ -54,6 +57,7 @@
             this.$bus.$on('dismissTheModal', () => {
                 this.dismissModal()
             })
+            console.log(this.$ti18n.locale)
         },
         watch: {
             search: function (newSearch, oldSearch) {

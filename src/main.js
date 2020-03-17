@@ -24,6 +24,8 @@ import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 import i18n from './i18n'
 
+Vue.prototype.$ti18n = i18n
+
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 Vue.use(Ionic)

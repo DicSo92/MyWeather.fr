@@ -24,6 +24,7 @@
         },
         mounted() {
             if (localStorage.getItem('favorites')) this.storeVueX('changeFavorites', JSON.parse(localStorage.getItem('favorites')))
+            if (localStorage.getItem('lang')) this.storeVueX('changeLang', JSON.parse(localStorage.getItem('lang')))
         },
         watch: {
             getCurrentSearch(val) {
@@ -34,6 +35,9 @@
             },
             getCurrentLocation(val) {
                 this.storeLocal('currentLocation', val)
+            },
+            getLang(val) {
+                this.storeLocal('lang', val)
             }
         },
         computed: {
@@ -45,6 +49,9 @@
             },
             getCurrentLocation() {
                 return this.$store.state.currentLocation
+            },
+            getLang() {
+                return this.$store.state.lang
             }
         },
         methods: {

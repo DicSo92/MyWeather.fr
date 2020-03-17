@@ -92,6 +92,7 @@
         },
         mounted() {
             this.$moment.locale(this.getLang)
+            this.$root.$i18n.locale = this.getLang
 
             this.$bus.$on('openSearch', () => {
                 this.openSearch()
