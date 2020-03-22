@@ -14,12 +14,12 @@
                             <h6 class="currentDate">{{this.currentWeatherData ? this.$moment((this.currentWeatherData.infos.dt + this.getTimezone)*1000).format("LLLL") : '--'}}</h6>
                         </ion-text>
                         <ion-buttons>
-                            <ion-button v-if="isFavorite" @click="removeFromFavorites(city)">
+                            <ion-button v-show="isFavorite" @click="removeFromFavorites(city)">
                                 <ion-icon slot="icon-only"
                                           name="star"
                                           color="warning"></ion-icon>
                             </ion-button>
-                            <ion-button v-if="!isFavorite" @click="addToFavorites(city)">
+                            <ion-button v-show="!isFavorite" @click="addToFavorites(city)">
                                 <ion-icon slot="icon-only"
                                           name="star-outline"
                                           color="light"></ion-icon>
@@ -83,10 +83,10 @@
                 return this.$store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.infos.id) !== -1
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === Number(this.city.infos.id)) !== -1
             },
             isCurrentSearch() {
-                return this.getCurrentSearch.infos.id === this.city.infos.id
+                return this.getCurrentSearch.infos.id === Number(this.city.infos.id)
             },
             isCurrentLocation() {
                 return this.getCurrentLocation ? this.getCurrentLocation.infos.id === this.city.infos.id : false
