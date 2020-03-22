@@ -37,7 +37,7 @@
                 return store.state.favorites
             },
             isFavorite() {
-                return this.getFavorites.findIndex(favorite => favorite.infos.id === this.city.id) !== -1;
+                return this.getFavorites.findIndex(favorite => favorite.infos.id === Number(this.city.id)) !== -1;
             },
         },
         methods: {
