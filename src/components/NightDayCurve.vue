@@ -154,7 +154,7 @@
                 offset-distance: 0;
 
                 animation: move ease-in-out 500ms;
-                opacity: 1;
+                /*opacity: 0;*/
                 transform: scale(1);
             }
         }
